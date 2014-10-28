@@ -18,7 +18,7 @@ public class Application extends Controller {
     public static Result jsonHello() {
         JsonNode json = request().body().asJson();
         if (json==null) {
-            return badRequest("Expecting Json data");
+            return badRequest();
         }
         String name = json.findPath("name").textValue();
         if (name==null) {
@@ -27,8 +27,10 @@ public class Application extends Controller {
 
         ObjectNode result = Json.newObject();
         result.put("greeting","Hello "+name);
+        result.put("version","1.0");
         return ok(result);
-
     }
+
+
 }
 
