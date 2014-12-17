@@ -16,21 +16,32 @@ import play.mvc.Result;
  */
 public class Users extends Controller {
 
+    public static String tokenKey (String jToken) {
+        return jToken + "_lg.key";
+    }
+
     @BodyParser.Of(BodyParser.Json.class)
-    public static Result login() {
+    public static Result newToken() {
         JsonNode json = request().body().asJson();
+        String username, password;
         Login lg;
         try {
-            String username = json.get("username").textValue();
-            String password = json.get("password").textValue();
-            User user = User.authenticate(username, password);
-            lg = Login.create(user.id);
+            username = json.get("usr").textValue().toString();
+            password = json.get("pwd").textValue().toString();
         } catch (NullPointerException e) {
             return badRequest("Invalid credential");
         }
+
+        try {
+            User user = User.authenticate(username, password);
+            lg = Login.create(user.id);
+        } catch (NullPointerException e) {
+            return unauthorized("Incorrect username or password");
+        }
+
         ObjectNode result = Json.newObject();
-        result.put("token",lg.loginId+"="+lg.token);
-        result.put("version","1.0");
+        result.put("tk",lg.loginId+"="+lg.token);
+        //result.put("v","0.1");
         return ok(result);
     }
 
@@ -39,8 +50,9 @@ public class Users extends Controller {
     public static Result signup() {
         JsonNode json = request().body().asJson();
         try {
-            String username = json.get("username").textValue();
-            String password = json.get("password").textValue();
+            // fields required
+            String username = json.get("usr").textValue().toString();
+            String password = json.get("pwd").textValue().toString();
             if (User.isUserExist(username))
                 return ok("Username already exists");
 

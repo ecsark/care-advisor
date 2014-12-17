@@ -19,9 +19,7 @@ public class User extends Model {
     public String id;
     public String password;
 
-    public String name;
-
-    public String role;
+    //public String name;
 
     public User() {}
 
@@ -40,19 +38,18 @@ public class User extends Model {
     }
 
 
-    public static Finder<String, User> find = new Finder<String, User>(String.class, User.class);
+    public static Finder<String, User> find = new Finder<>(String.class, User.class);
 
     public static User authenticate(String id, String password) {
         try {
             User user =  find.where().eq("id",id).findUnique();
-            if (user != null && PasswordHash.validatePassword(password,user.password))
+            if (user != null && PasswordHash.validatePassword(password, user.password))
                 return user;
             return null;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-
 
     public static boolean isUserExist (String id) {
         return find.where().eq("id",id).findUnique()!=null;
