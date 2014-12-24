@@ -18,9 +18,9 @@ import java.sql.Date;
 public class Login extends Model {
 
     @Id
-    public String loginId;
+    public long sessionId;
 
-    public String userId;
+    public long userId;
 
     public Date loginDate;
 
@@ -31,10 +31,10 @@ public class Login extends Model {
 
     public static Model.Finder<String, Login> find = new Model.Finder<String, Login>(String.class, Login.class);
 
-    public static Login authenticate(String jtoken) {
+    public static Login authenticate(String token) {
         try {
-            String[] pair = jtoken.split("=");
-            Login login =  find.where().eq("loginId",pair[0]).findUnique();
+            String[] pair = token.split("=");
+            Login login =  find.where().eq("sessionId",pair[0]).findUnique();
             if (login != null && login.token.equals(pair[1]))
                 return login;
             return null;
@@ -43,7 +43,7 @@ public class Login extends Model {
         }
     }
 
-    public static Login create(String userId) {
+    public static Login create(long userId) {
         Login login = new Login();
         try {
             login.userId = userId;

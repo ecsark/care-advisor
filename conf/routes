@@ -7,6 +7,7 @@ GET         /                    controllers.Application.index()
 POST        /hello               controllers.Application.jsonHello()
 
 POST        /signup              controllers.Users.signup()
+PUT         /users/:id           controllers.Users.updateUser(id: Long)
 
 POST        /newtk               controllers.Users.newToken()
 POST        /ask                 @controllers.Medical.ask()

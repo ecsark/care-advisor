@@ -1,5 +1,7 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 /**
@@ -9,6 +11,9 @@ import java.util.List;
  */
 public class MedicalAsk {
 
-    public String tk;
-    public List<Integer> c;
+    @JsonProperty("tk")
+    public String token;
+
+    @JsonProperty("c")
+    public List<Integer> choices;
 }

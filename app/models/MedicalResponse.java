@@ -1,5 +1,7 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,15 +10,21 @@ import java.util.List;
  * Date: 12/18/14
  * Time: 00:28
  */
-public class MedicalResponse {
+public class MedicalResponse implements JResponse {
 
     public MedicalQuestion createQuestion () {
-        if (q == null)
-            q = new ArrayList<>();
+        if (questions == null)
+            questions = new ArrayList<>();
         MedicalQuestion question = new MedicalQuestion();
-        q.add(question);
+        questions.add(question);
         return question;
     }
 
-    public List<MedicalQuestion> q;
+    @JsonProperty("q")
+    public List<MedicalQuestion> questions;
+
+    @Override
+    public int getResponseType() {
+        return 3;
+    }
 }

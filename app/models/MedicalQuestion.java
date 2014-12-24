@@ -1,5 +1,8 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +11,7 @@ import java.util.List;
  * Date: 12/18/14
  * Time: 01:02
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MedicalQuestion {
 
     public static int SINGLE_CHOICE = 0;
@@ -15,55 +19,64 @@ public class MedicalQuestion {
     public static int INTEGER_RANGE = 2;
     public static int FLOAT_RANGE = 3;
 
-    public int q_id;
-    public String q_txt;
-    public int question_type;
+    @JsonProperty("q_id")
+    public int questionId;
 
-    public MedicalQuestion setQuestionId(int q_id) {
-        this.q_id = q_id;
+    @JsonProperty("q_txt")
+    public String questionText;
+
+    @JsonProperty("type")
+    public int questionType;
+
+    public MedicalQuestion setQuestionId(int questionId) {
+        this.questionId = questionId;
         return this;
     }
 
-    public MedicalQuestion setQuestionText(String q_txt) {
-        this.q_txt = q_txt;
+    public MedicalQuestion setQuestionText(String questionText) {
+        this.questionText = questionText;
         return this;
     }
 
-    public MedicalQuestion setQuestionType(int question_type) {
-        this.question_type = question_type;
+    public MedicalQuestion setQuestionType(int questionType) {
+        this.questionType = questionType;
         return this;
     }
 
-    public List<MedicalChoice> opt;
+    @JsonProperty("opt")
+    public List<MedicalChoice> options;
 
     public MedicalQuestion() {}
 
     public MedicalChoice createChoice () {
-        if (opt == null)
-            opt = new ArrayList<>();
+        if (options == null)
+            options = new ArrayList<>();
         MedicalChoice choice = new MedicalChoice();
-        opt.add(choice);
+        options.add(choice);
         return choice;
     }
 
     public class MedicalChoice {
 
         public MedicalChoice() {}
-        public MedicalChoice(int answer_id, String answer_text) {
-            a_id = answer_id;
-            a_txt = answer_text;
+        public MedicalChoice(int answerId, String answerText) {
+            this.answerId = answerId;
+            this.answerText = answerText;
         }
 
-        public int a_id;
-        public String a_txt;
+        @JsonProperty("a_id")
+        public int answerId;
 
-        public MedicalChoice setAnswerId(int answer_id) {
-            a_id = answer_id;
+        @JsonProperty("a_txt")
+        public String answerText;
+
+        public MedicalChoice setAnswerId(int answerId) {
+            this.answerId = answerId;
             return this;
         }
 
-        public MedicalChoice setAnswerText(String answer_text) {
-            a_txt = answer_text;
+        public MedicalChoice setAnswerText(String answerText) {
+            this.answerText = answerText;
             return this;
         }
     }

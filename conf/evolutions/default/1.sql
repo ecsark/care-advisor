@@ -12,7 +12,8 @@ create table login (
 ;
 
 create table user (
-  id                        varchar(255) not null,
+  id                        bigint not null,
+  username                  varchar(255),
   password                  varchar(255),
   constraint pk_user primary key (id))
 ;

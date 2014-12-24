@@ -16,19 +16,35 @@ import javax.persistence.Id;
 public class User extends Model {
 
     @Id
-    public String id;
+    public long userId;
+    public String username;
     public String password;
 
     //public String name;
 
     public User() {}
 
-    public static User create (String id, String password) {
+    public static User create (String username, String password) {
 
         User user = new User();
         try {
-            user.id = id;
+            user.username = username;
             user.password = PasswordHash.createHash(password);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        user.save();
+        return user;
+    }
+
+
+    public User update (String newUsername, String newPassword) {
+
+        User user = new User();
+        try {
+            user.username = newUsername;
+            user.password = PasswordHash.createHash(newPassword);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -40,9 +56,9 @@ public class User extends Model {
 
     public static Finder<String, User> find = new Finder<>(String.class, User.class);
 
-    public static User authenticate(String id, String password) {
+    public static User authenticate(String username, String password) {
         try {
-            User user =  find.where().eq("id",id).findUnique();
+            User user =  find.where().eq("username",username).findUnique();
             if (user != null && PasswordHash.validatePassword(password, user.password))
                 return user;
             return null;
@@ -51,7 +67,7 @@ public class User extends Model {
         }
     }
 
-    public static boolean isUserExist (String id) {
-        return find.where().eq("id",id).findUnique()!=null;
+    public static boolean isUserExist (String username) {
+        return find.where().eq("username", username).findUnique()!=null;
     }
 }
