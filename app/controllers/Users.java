@@ -1,14 +1,20 @@
 package controllers;
 
+import actions.LoginRequired;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import models.Login;
-import models.User;
+import models.MFeedback;
+import models.MSession;
+import models.MUser;
 import play.cache.Cache;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
+
+import java.sql.Timestamp;
+import java.util.Calendar;
 
 /**
  * User: ecsark
@@ -17,89 +23,135 @@ import play.mvc.Result;
  */
 public class Users extends Controller {
 
-    public static String tokenKey (String jToken) {
+    public static final String SESSION_USER_ID_KEY = "uid";
+    public static final String SESSION_LOGIN_TIME_KEY = "lg_tm";
+
+    private static Calendar calendar = Calendar.getInstance();
+
+    public static String sessionToken(String jToken) {
         if (jToken == null)
             return null;
         return jToken + "_lg.key";
     }
 
-    public static Login getLogin (String jToken) {
+    public static MSession getSessionAndCache(String jToken) {
         if (jToken == null)
             return null;
-        Login login = (Login) Cache.get(tokenKey(jToken));
-        if (login != null)
-            return login;
+        MSession mSession = (MSession) Cache.get(sessionToken(jToken));
+        if (mSession != null)
+            return mSession;
         else {
-            login = Login.authenticate(jToken);
-            if (login != null)
-                Cache.set(Users.tokenKey(jToken), login);
+            mSession = MSession.authenticate(jToken);
+            if (mSession != null)
+                Cache.set(Users.sessionToken(jToken), mSession);
         }
-        return login;
+        return mSession;
     }
 
-    @BodyParser.Of(BodyParser.Json.class)
-    public static Result newToken() {
-        JsonNode json = request().body().asJson();
-        String username, password;
-        Login lg;
+    @Security.Authenticated(LoginRequired.class)
+    public static Result newSession() {
         try {
-            username = json.get("usr").textValue().toString();
-            password = json.get("pwd").textValue().toString();
-        } catch (NullPointerException e) {
-            return badRequest("Invalid credential");
-        }
+            MSession lg = MSession.create(getUserId());
 
-        try {
-            User user = User.authenticate(username, password);
-            lg = Login.create(user.userId);
-        } catch (NullPointerException e) {
-            return unauthorized("Incorrect username or password");
-        }
+            ObjectNode result = Json.newObject();
+            result.put("tk",lg.sessionId +"="+lg.token);
+            return ok(result);
 
-        ObjectNode result = Json.newObject();
-        result.put("tk",lg.sessionId +"="+lg.token);
-        //result.put("v","0.1");
-        return ok(result);
+        } catch (NullPointerException e) {
+            return badRequest();
+        }
     }
 
 
     @BodyParser.Of(BodyParser.Json.class)
     public static Result signup() {
-        JsonNode json = request().body().asJson();
-        try {
-            // fields required
-            String username = json.get("usr").textValue().toString();
-            String password = json.get("pwd").textValue().toString();
-            if (User.isUserExist(username))
-                return ok("Username already exists");
 
-            User.create(username, password);
+        try {
+            JsonNode json = request().body().asJson();
+            String username = json.findValue("usr").textValue();
+            String password = json.findValue("pwd").textValue();
+
+            if (MUser.isUserExist(username))
+                return forbidden("Username already exists");
+
+            MUser.create(username, password);
+
             return ok("User " + username + " has been created successfully");
+
         } catch(NullPointerException e) {
-            return badRequest("Invalid request");
+            return badRequest();
+        }
+    }
+
+    @Security.Authenticated(LoginRequired.class)
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Result updateUser() {
+
+        try {
+            JsonNode json = request().body().asJson();
+            String username = json.findValue("usr").textValue();
+            String password = json.findValue("pwd").textValue();
+            MUser user = MUser.authenticate(username, password);
+            if (user == null || user.userId != getUserId ())
+                return unauthorized("Incorrect username or password");
+
+            String newUserName = json.findValue("nusr").textValue();
+            String newPassword = json.findValue("npwd").textValue();
+            if (newUserName.equals("") || newPassword.equals(""))
+                return forbidden("Username or password should not be empty");
+
+            user.update(newUserName, newPassword);
+            return ok("User information updated");
+
+        } catch (NullPointerException e) {
+            return badRequest();
         }
     }
 
     @BodyParser.Of(BodyParser.Json.class)
-    public static Result updateUser(long userId) {
+    public static Result login() {
+        try {
+            JsonNode json = request().body().asJson();
+            String username = json.findValue("usr").textValue();
+            String password = json.findValue("pwd").textValue();
+
+            MUser user = MUser.authenticate(username, password);
+            if (user == null)
+                return unauthorized("Incorrect username or password");
+
+            session().clear();
+            session(SESSION_USER_ID_KEY, Long.toString(user.userId));
+            session(SESSION_LOGIN_TIME_KEY, Long.toString(System.currentTimeMillis()));
+
+            return ok();
+
+        } catch (NullPointerException e) {
+            return badRequest();
+        }
+    }
+
+    public static long getUserId () {
+        return Long.parseLong(session(SESSION_USER_ID_KEY));
+    }
+
+    public static Result logout() {
+        session().clear();
+        return ok();
+    }
+
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Result feedback() {
         JsonNode json = request().body().asJson();
-        String username, password, newUserName, newPassword;
-        try {
-            username = json.get("usr").textValue().toString();
-            password = json.get("pwd").textValue().toString();
-
-            newUserName = json.get("nusr").textValue().toString();
-            newPassword = json.get("npwd").textValue().toString();
-        } catch (NullPointerException e) {
-            return badRequest("Invalid credential");
-        }
-
-        try {
-            User user = User.authenticate(username, password);
-            user.update(newUserName, newPassword);
-        } catch (NullPointerException e) {
-            return unauthorized("Incorrect username or password");
-        }
+        MFeedback feedback = new MFeedback();
+        feedback.content = json.findValue("content").textValue();
+        if (feedback.content == null || feedback.content.equals(""))
+            return badRequest("Content should not be null.");
+        feedback.createdTime = new Timestamp(calendar.getTime().getTime());
+        if (session(SESSION_USER_ID_KEY) != null)
+            feedback.userId = Long.parseLong(session(SESSION_USER_ID_KEY));
+        feedback.contact = json.findValue("contact").textValue();
+        feedback.email = json.findValue("email").textValue();
+        feedback.save();
 
         return ok();
     }

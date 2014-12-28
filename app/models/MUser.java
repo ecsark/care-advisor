@@ -13,20 +13,21 @@ import javax.persistence.Id;
  */
 
 @Entity
-public class User extends Model {
+public class MUser extends Model {
 
     @Id
     public long userId;
     public String username;
     public String password;
 
-    //public String name;
+    public String name;
+    public String contact;
 
-    public User() {}
+    public MUser() {}
 
-    public static User create (String username, String password) {
+    public static MUser create (String username, String password) {
 
-        User user = new User();
+        MUser user = new MUser();
         try {
             user.username = username;
             user.password = PasswordHash.createHash(password);
@@ -39,9 +40,9 @@ public class User extends Model {
     }
 
 
-    public User update (String newUsername, String newPassword) {
+    public MUser update (String newUsername, String newPassword) {
 
-        User user = new User();
+        MUser user = new MUser();
         try {
             user.username = newUsername;
             user.password = PasswordHash.createHash(newPassword);
@@ -54,11 +55,14 @@ public class User extends Model {
     }
 
 
-    public static Finder<String, User> find = new Finder<>(String.class, User.class);
+    public static Finder<String, MUser> find = new Finder<>(String.class, MUser.class);
 
-    public static User authenticate(String username, String password) {
+    public static MUser authenticate(String username, String password) {
+        if (username == null || password == null)
+            return null;
+
         try {
-            User user =  find.where().eq("username",username).findUnique();
+            MUser user =  find.where().eq("username",username).findUnique();
             if (user != null && PasswordHash.validatePassword(password, user.password))
                 return user;
             return null;
@@ -66,6 +70,7 @@ public class User extends Model {
             throw new RuntimeException(e);
         }
     }
+
 
     public static boolean isUserExist (String username) {
         return find.where().eq("username", username).findUnique()!=null;

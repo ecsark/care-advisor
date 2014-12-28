@@ -1,10 +1,15 @@
 package services;
 
+import models.NodeLabel;
+import models.RelationLabel;
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.server.rest.web.NodeNotFoundException;
+import org.springframework.stereotype.Service;
+import repositories.UserRepository;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.Collections;
 import java.util.Map;
 
@@ -13,9 +18,19 @@ import java.util.Map;
  * Date: 12/22/14
  * Time: 22:51
  */
-@SuppressWarnings("unchecked")
+@Singleton
+@Service
 public class NeoStructureManager {
+
+    //@Inject
     private GraphDatabaseService db;
+
+    //@Inject
+    //private Neo4jTemplate template;
+
+    @Inject
+    private UserRepository userRepository;
+
     private Index<Node> userIndex;
     private Index<Node> sessionIndex;
     private Index<Node> symptomIndex;
@@ -26,17 +41,14 @@ public class NeoStructureManager {
     private final String SYMPTOM_ID_KEY = "symptom_id";
     private final String DISEASE_ID_KEY = "disease_id";
 
-    @Inject
-    protected NeoStructureManager(GraphDatabaseService db) {
-        //graphDb = new RestAPIFacade(url);
-        this.db = db;
+    /*public NeoStructureManager() {
         userIndex = db.index().forNodes("user_nodes");
         sessionIndex = db.index().forNodes("session_nodes");
         symptomIndex = db.index().forNodes("symptom_nodes");
         diseaseIndex = db.index().forNodes("disease_nodes");
-    }
+    }*/
 
-    protected void newToken(long userId, long sessionId, Map<String, Object> sessionParams, Map<String, Object> relationParams) {
+    protected void newSession (long userId, long sessionId, Map<String, Object> sessionParams, Map<String, Object> relationParams) {
 
         Node userNode = null;
         try {
@@ -114,6 +126,15 @@ public class NeoStructureManager {
         }
     }
 
+    protected Node getUserOrCreate (long userId) {
+        Node userNode =  userIndex.get(USER_ID_KEY, userId).getSingle();
+        if (userNode == null) {
+            userNode = newUser(userId, Collections.EMPTY_MAP);
+        }
+        return userNode;
+    }
+
+
     protected Node getUserOrException (long userId) throws NodeNotFoundException {
         Node userNode =  userIndex.get(USER_ID_KEY, userId).getSingle();
         if (userNode == null) {
@@ -159,56 +180,5 @@ public class NeoStructureManager {
 
         return obj;
     }
-/*
-    private Node newNode (NodeLabel label, Map<String, Object> params, IndexParams indexParam) {
-        final List<IndexParams> indexParams = new ArrayList<>();
-        indexParams.add(indexParam);
-        return newNode(label, params, indexParams);
-    }
-
-    private Node newNode (NodeLabel label, final Map<String, Object> params, final List<IndexParams> indexParams) {
-
-        try (Transaction tx = db.beginTx()) {
-
-            Node node = db.createNode(label);
-
-            if (params != null)
-                setProperties(node, params);
-
-            if (indexParams != null) {
-                for (IndexParams param : indexParams) {
-                    param.index.add(node, param.indexKey, param.indexValue);
-                }
-            }
-
-            tx.success();
-            return node;
-        }
-    }
-
-
-    class IndexParams {
-
-        IndexParams() {}
-
-        public IndexParams(Index<Node> index, String indexKey, Object indexValue) {
-            this.index = index;
-            this.indexKey = indexKey;
-            this.indexValue = indexValue;
-        }
-
-        Index<Node> index;
-        String indexKey;
-        Object indexValue;
-    }*/
 }
 
-enum NodeLabel implements Label {
-
-    USER, TOKEN, DISEASE, SYMPTOM;
-}
-
-enum RelationLabel implements RelationshipType {
-    EXPERIENCES, SHOWS, INDICATES, INFERS;
-
-}

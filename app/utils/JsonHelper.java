@@ -2,7 +2,7 @@ package utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import models.JResponse;
+import exchange.MResponse;
 import play.libs.Json;
 
 /**
@@ -10,16 +10,17 @@ import play.libs.Json;
  * Date: 12/24/14
  * Time: 23:42
  */
-public class ResponseHelper {
+public class JsonHelper {
 
     public static JsonNode generate (Object object, int responseType) {
         ObjectNode response = Json.newObject();
-        response.put("t", responseType);
-        response.put("p", Json.toJson(object));
+        response.put("t", responseType); // type
+        response.put("p", Json.toJson(object)); // payload
         return response;
     }
 
-    public static JsonNode generate (JResponse object) {
+    public static JsonNode generate (MResponse object) {
         return generate(object, object.getResponseType());
     }
+
 }

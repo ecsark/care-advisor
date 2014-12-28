@@ -1,4 +1,4 @@
-package models;
+package exchange;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -10,18 +10,18 @@ import java.util.List;
  * Date: 12/18/14
  * Time: 00:28
  */
-public class MedicalResponse implements JResponse {
+public class MFurtherQuestions implements MResponse {
 
-    public MedicalQuestion createQuestion () {
+    public MQuestion createQuestion () {
         if (questions == null)
             questions = new ArrayList<>();
-        MedicalQuestion question = new MedicalQuestion();
+        MQuestion question = new MQuestion();
         questions.add(question);
         return question;
     }
 
     @JsonProperty("q")
-    public List<MedicalQuestion> questions;
+    public List<MQuestion> questions;
 
     @Override
     public int getResponseType() {

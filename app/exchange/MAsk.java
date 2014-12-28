@@ -1,4 +1,4 @@
-package models;
+package exchange;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -9,7 +9,7 @@ import java.util.List;
  * Date: 12/17/14
  * Time: 23:38
  */
-public class MedicalAsk {
+public class MAsk {
 
     @JsonProperty("tk")
     public String token;

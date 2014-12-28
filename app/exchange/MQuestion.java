@@ -1,4 +1,4 @@
-package models;
+package exchange;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,7 +12,7 @@ import java.util.List;
  * Time: 01:02
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class MedicalQuestion {
+public class MQuestion {
 
     public static int SINGLE_CHOICE = 0;
     public static int MULTIPLE_CHOICES = 1;
@@ -28,17 +28,17 @@ public class MedicalQuestion {
     @JsonProperty("type")
     public int questionType;
 
-    public MedicalQuestion setQuestionId(int questionId) {
+    public MQuestion setQuestionId(int questionId) {
         this.questionId = questionId;
         return this;
     }
 
-    public MedicalQuestion setQuestionText(String questionText) {
+    public MQuestion setQuestionText(String questionText) {
         this.questionText = questionText;
         return this;
     }
 
-    public MedicalQuestion setQuestionType(int questionType) {
+    public MQuestion setQuestionType(int questionType) {
         this.questionType = questionType;
         return this;
     }
@@ -46,7 +46,7 @@ public class MedicalQuestion {
     @JsonProperty("opt")
     public List<MedicalChoice> options;
 
-    public MedicalQuestion() {}
+    public MQuestion() {}
 
     public MedicalChoice createChoice () {
         if (options == null)

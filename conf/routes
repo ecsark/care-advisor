@@ -3,14 +3,26 @@
 # ~~~~
 
 # Home page
-GET         /                    controllers.Application.index()
-POST        /hello               controllers.Application.jsonHello()
+GET           /                         controllers.Application.index()
+POST          /hello                    controllers.Application.jsonHello()
 
-POST        /signup              controllers.Users.signup()
-PUT         /users/:id           controllers.Users.updateUser(id: Long)
+POST          /feedback                 controllers.Users.feedback()
 
-POST        /newtk               controllers.Users.newToken()
-POST        /ask                 @controllers.Medical.ask()
+POST          /users/signup             controllers.Users.signup()
+POST          /users/auth               controllers.Users.login()
+DELETE        /users/auth               controllers.Users.logout()
+POST          /users/newtk              controllers.Users.newSession()
+PUT           /users/update             controllers.Users.updateUser()
+
+GET           /medical/history          @controllers.Medical.getHistory()
+POST          /medical/ask              @controllers.Medical.ask()
+GET           /medical/session          @controllers.Medical.requestSession()
+GET           /medical/userinfo         @controllers.Medical.getUserInfo()
+POST          /medical/userinfo         @controllers.Medical.updateUserInfo()
+POST          /medical/submitdis        @controllers.Medical.submitDisease()
+POST          /medical/submitsym        @controllers.Medical.submitSymptoms()
+GET           /medical/listuser         @controllers.Medical.listUsers()
+
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file        controllers.Assets.at(path="/public", file)
+GET           /assets/*file             controllers.Assets.at(path="/public", file)
