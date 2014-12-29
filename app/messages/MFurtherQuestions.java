@@ -1,4 +1,4 @@
-package exchange;
+package messages;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

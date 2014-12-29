@@ -1,6 +1,6 @@
 package services;
 
-import exchange.MEntityEntry;
+import messages.MEntityEntry;
 import models.NodeLabel;
 import org.neo4j.graphdb.GraphDatabaseService;
 

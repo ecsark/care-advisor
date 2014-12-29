@@ -4,15 +4,13 @@ import actions.LoginRequired;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import exchange.*;
-import models.NDisease;
-import models.NSession;
-import models.NSymptom;
-import models.NUser;
+import messages.*;
+import models.*;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import repositories.DiseaseRepository;
 import repositories.SessionRepository;
 import repositories.SymptomRepository;
 import repositories.UserRepository;
@@ -21,7 +19,9 @@ import services.NeoKnowledgeBase;
 import utils.JsonHelper;
 
 import javax.inject.Inject;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * User: ecsark
@@ -42,6 +42,8 @@ public class Medical extends Controller {
     @Inject
     private SymptomRepository symptomRepository;
     @Inject
+    private DiseaseRepository diseaseRepository;
+    @Inject
     private SessionRepository sessionRepository;
 
     private static ObjectMapper mapper = new ObjectMapper()
@@ -53,7 +55,7 @@ public class Medical extends Controller {
         long userId = Users.getUserId();
         NUser u = userRepository.findByRefId(userId);
         if (u == null) {
-            return forbidden();
+            return forbidden("Please first update user information");
         } else {
             MUserInfo userInfo = new MUserInfo();
             userInfo.birthdate = u.birthDate;
@@ -101,7 +103,7 @@ public class Medical extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public Result ask() {
         try {
-            MAsk question = mapper.treeToValue(request().body().asJson(), MAsk.class);
+            MRecord question = mapper.treeToValue(request().body().asJson(), MRecord.class);
 
             MResponse response = null;
             if (session(Users.SESSION_USER_ID_KEY) != null) {
@@ -124,25 +126,30 @@ public class Medical extends Controller {
     public Result getHistory() {
         NUser u = userRepository.findBySchemaPropertyValue(NUser.REF_ID_INDEX, Users.getUserId());
         if (u == null)
-            return forbidden();
+            return forbidden("Please first update user information");
 
         MHistory history = new MHistory();
         for (NSession s : u.sessions) {
-            MHistory.MRecord record = history.addHistory();
+            MRecord record = history.addHistory();
             record.setCreatedTime(s.created).setSessionId(s.id);
             for (NSymptom nsym : s.symptoms)
                 record.addSymptom().setName(nsym.cnText).setId(nsym.id);
-            for (NDisease ndis : s.diseases)
-                record.addDisease().setName(ndis.cnText).setId(ndis.id);
+            for (RDiagnosis diag : s.diagnosed) {
+                NDisease ndis = diag.disease;
+                MObject obj = record.addDisease().setName(ndis.cnText).setId(ndis.id);
+                if (diag.diagDate != null)
+                    obj.setParam("diag_tm", diag.diagDate);
+            }
         }
         return ok(JsonHelper.generate(history));
     }
+
 
     @Security.Authenticated(LoginRequired.class)
     public Result requestSession() {
         NUser u = userRepository.findByRefId(Users.getUserId());
         if (u == null)
-            return forbidden();
+            return forbidden("Please first update user information");
         NSession s = u.newSession();
         userRepository.save(u);
         return ok(Long.toString(s.id));
@@ -155,15 +162,16 @@ public class Medical extends Controller {
     public Result submitSymptoms() {
 
         try {
-            MAsk question = mapper.treeToValue(request().body().asJson(), MAsk.class);
+            MRecord question = mapper.treeToValue(request().body().asJson(), MRecord.class);
             NUser u = userRepository.findByRefId(Users.getUserId());
             if (u == null)
-                return forbidden();
+                return forbidden("Please first update user information");
             NSession s = u.newSession();
-            for (long symId : question.choices) {
+            for (MObject obj : question.diseases) {
+                Long symId = obj.id;
                 NSymptom symptom = symptomRepository.getById(symId);
                 if (symptom == null)
-                    return notFound("Symptom id " + symId + " not found in database!");
+                    return notFound("Invalid Symptom ID: " + Long.toString(symId));
 
                 s.addSymptom(symptom);
             }
@@ -182,13 +190,26 @@ public class Medical extends Controller {
     public Result submitDisease() {
 
         try {
-            MAsk question = mapper.treeToValue(request().body().asJson(), MAsk.class);
+            MRecord record = mapper.treeToValue(request().body().asJson(), MRecord.class);
             NUser u = userRepository.findByRefId(Users.getUserId());
             if (u == null)
-                return forbidden();
-            NSession s = sessionRepository.findOne(Long.parseLong(question.token));
-            if (s == null || s.user.id != u.id)
-                return unauthorized();
+                return forbidden("Please first update user information");
+            NSession s = sessionRepository.findOne(record.sessionId);
+            if (s == null || !Objects.equals(s.user.id, u.id))
+                return unauthorized("Invalid session");
+
+            for (MObject obj : record.diseases) {
+                NDisease d = diseaseRepository.findOne(obj.id);
+                if (d == null)
+                    return notFound("Invalid Disease ID: " + Long.toString(obj.id));
+                RDiagnosis diag = s.addDiagnosedDisease(d);
+
+                Date time = (Date) obj.getParam("diag_tm");
+                if (time != null)
+                    diag.diagDate = time;
+
+            }
+
             sessionRepository.save(s);
             return ok();
 

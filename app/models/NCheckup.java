@@ -1,6 +1,9 @@
 package models;
 
 import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.springframework.data.neo4j.annotation.RelatedToVia;
+
+import java.util.Set;
 
 /**
  * User: ecsark
@@ -9,5 +12,8 @@ import org.springframework.data.neo4j.annotation.NodeEntity;
  */
 @NodeEntity
 public class NCheckup extends AbstractEntity {
-    String content;
+    public String content;
+
+    @RelatedToVia
+    public Set<RDependsOn> dependedDiseases;
 }

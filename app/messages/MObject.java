@@ -1,4 +1,4 @@
-package exchange;
+package messages;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -26,8 +26,14 @@ public class MObject {
         return this;
     }
 
+    public Object getParam(String key) {
+        if (params == null)
+            return null;
+        return params.get(key);
+    }
+
     @JsonProperty("name")
-    String name;
+    public String name;
 
     public MObject setName(String name) {
         this.name = name;
@@ -40,7 +46,7 @@ public class MObject {
     }
 
     @JsonProperty("id")
-    long id;
+    public long id;
 
     @JsonProperty("p")
     Map<String, Object> params;

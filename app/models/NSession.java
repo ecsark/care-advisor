@@ -4,6 +4,7 @@ import org.neo4j.graphdb.Direction;
 import org.springframework.data.neo4j.annotation.GraphProperty;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
+import org.springframework.data.neo4j.annotation.RelatedToVia;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -24,10 +25,10 @@ public class NSession extends AbstractEntity {
     public NUser user;
 
     @RelatedTo(elementClass = NSymptom.class, type = "REPORTS", direction = Direction.OUTGOING)
-    public Set<NSymptom> symptoms = new LinkedHashSet<>();
+    public Set<NSymptom> symptoms;
 
-    @RelatedTo(elementClass = NDisease.class, type = "DIAGNOSES", direction = Direction.OUTGOING)
-    public Set<NDisease> diseases = new LinkedHashSet<>();
+    @RelatedToVia
+    public Set<RDiagnosis> diagnosed;
 
     @GraphProperty(propertyType = Long.class)
     public Timestamp created = new Timestamp(Calendar.getInstance().getTime().getTime());
@@ -35,8 +36,19 @@ public class NSession extends AbstractEntity {
     public NSymptom addSymptom (NSymptom symptom) {
         if (symptom == null)
             return null;
-        //NSymptom symptom = new NSymptom();
+        if (symptoms == null)
+            symptoms = new LinkedHashSet<>();
         symptoms.add(symptom);
         return symptom;
+    }
+
+    public RDiagnosis addDiagnosedDisease(NDisease disease) {
+        if (disease == null)
+            return null;
+        if (diagnosed == null)
+            diagnosed = new LinkedHashSet<>();
+        RDiagnosis diag = new RDiagnosis(this, disease);
+        diagnosed.add(diag);
+        return diag;
     }
 }

@@ -49,6 +49,7 @@ public class Users extends Controller {
     }
 
     @Security.Authenticated(LoginRequired.class)
+    @Deprecated
     public static Result newSession() {
         try {
             MSession lg = MSession.create(getUserId());

@@ -2,7 +2,9 @@ package models;
 
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
-import org.springframework.data.neo4j.annotation.RelatedTo;
+import org.springframework.data.neo4j.annotation.RelatedToVia;
+
+import java.util.Set;
 
 /**
  * User: ecsark
@@ -16,9 +18,12 @@ public class NDisease extends AbstractEntity {
     @Indexed
     public String cnText;
 
-    @RelatedTo
-    public Iterable<NSession> sessions;
+    @RelatedToVia
+    public Set<RCause> causingSymptoms;
 
+    @RelatedToVia
+    public Iterable<RDiagnosis> diagnosedSessions;
 
-
+    @RelatedToVia
+    public Set<RDependsOn> dependentCheckups;
 }

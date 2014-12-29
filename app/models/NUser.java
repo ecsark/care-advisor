@@ -24,7 +24,7 @@ public class NUser extends AbstractEntity {
     @Transient
     public static final String REF_ID_INDEX = "refId";
 
-    @Indexed(unique = true)
+    @Indexed()
     public Long refId;
 
     // 0: female, 1: male, other: unknown

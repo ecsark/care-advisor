@@ -2,7 +2,7 @@ package utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import exchange.MResponse;
+import messages.MResponse;
 import play.libs.Json;
 
 /**

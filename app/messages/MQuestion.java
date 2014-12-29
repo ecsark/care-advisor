@@ -1,4 +1,4 @@
-package exchange;
+package messages;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,7 +20,7 @@ public class MQuestion {
     public static int FLOAT_RANGE = 3;
 
     @JsonProperty("q_id")
-    public int questionId;
+    public long questionId;
 
     @JsonProperty("q_txt")
     public String questionText;
@@ -28,7 +28,7 @@ public class MQuestion {
     @JsonProperty("type")
     public int questionType;
 
-    public MQuestion setQuestionId(int questionId) {
+    public MQuestion setQuestionId(long questionId) {
         this.questionId = questionId;
         return this;
     }
@@ -59,18 +59,18 @@ public class MQuestion {
     public class MedicalChoice {
 
         public MedicalChoice() {}
-        public MedicalChoice(int answerId, String answerText) {
+        public MedicalChoice(long answerId, String answerText) {
             this.answerId = answerId;
             this.answerText = answerText;
         }
 
         @JsonProperty("a_id")
-        public int answerId;
+        public long answerId;
 
         @JsonProperty("a_txt")
         public String answerText;
 
-        public MedicalChoice setAnswerId(int answerId) {
+        public MedicalChoice setAnswerId(long answerId) {
             this.answerId = answerId;
             return this;
         }
