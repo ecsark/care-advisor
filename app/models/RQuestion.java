@@ -11,7 +11,7 @@ import org.springframework.data.neo4j.annotation.StartNode;
  */
 @RelationshipEntity(type = "ASKS")
 public class RQuestion extends AbstractEntity {
-    public String choiceText;
+    public String cnText;
 
     @StartNode
     public NQuestionGroup questionGroup;
@@ -19,4 +19,10 @@ public class RQuestion extends AbstractEntity {
     @EndNode
     public NSymptom symptomChoice;
 
+    public RQuestion(NQuestionGroup questionGroup, NSymptom symptomChoice) {
+        this.questionGroup = questionGroup;
+        this.symptomChoice = symptomChoice;
+    }
+
+    public RQuestion() {}
 }

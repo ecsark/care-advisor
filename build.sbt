@@ -13,7 +13,7 @@ libraryDependencies ++= Seq(
   javaWs,
   "org.neo4j" % "neo4j-kernel" % "2.1.6",
   "org.neo4j" % "neo4j-rest-graphdb" % "2.0.1",
-  "com.google.inject" % "guice" % "4.0-beta",
+  //"com.google.inject" % "guice" % "4.0-beta",
   "com.sun.jersey" % "jersey-core" % "1.18.3",
   //"com.google.code.gson" % "gson" % "2.3.1",
   "mysql" % "mysql-connector-java" % "5.1.34",

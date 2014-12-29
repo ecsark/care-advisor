@@ -3,13 +3,12 @@ package actions;
 
 import controllers.Users;
 import models.NUser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Security;
 import repositories.SessionRepository;
-
-import javax.inject.Inject;
 
 /**
  * User: ecsark
@@ -19,7 +18,7 @@ import javax.inject.Inject;
 @Service
 public class SessionRequired extends Security.Authenticator {
 
-    @Inject
+    @Autowired
     private SessionRepository sessionRepository;
 
     @Override

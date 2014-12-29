@@ -1,5 +1,6 @@
 package models;
 
+import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedToVia;
 
@@ -14,14 +15,15 @@ import java.util.Set;
 @NodeEntity
 public class NQuestionGroup extends AbstractEntity {
 
-    public String chText;
+    @Indexed
+    public String cnText;
 
     @RelatedToVia
-    Set<RQuestion> questions=new HashSet<>();
+    public Set<RQuestion> questions=new HashSet<>();
 
     public RQuestion addChoice (NSymptom symptom, String choiceText) {
-        RQuestion question = new RQuestion();
-        question.choiceText = choiceText;
+        RQuestion question = new RQuestion(this, symptom);
+        question.cnText = choiceText;
         questions.add(question);
         return question;
     }

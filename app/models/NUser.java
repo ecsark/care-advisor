@@ -10,7 +10,7 @@ import org.springframework.data.neo4j.annotation.RelatedTo;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -33,7 +33,7 @@ public class NUser extends AbstractEntity {
     public Date birthDate;
 
     @RelatedTo(elementClass = NSession.class, type = "COMMITS", direction = Direction.OUTGOING)
-    public Set<NSession> sessions = new LinkedHashSet<>();
+    public Set<NSession> sessions = new HashSet<>();
 
     public NSession newSession() {
         NSession session = new NSession();

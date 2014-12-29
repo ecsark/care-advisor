@@ -12,7 +12,7 @@ import java.util.Set;
  */
 @NodeEntity
 public class NCheckup extends AbstractEntity {
-    public String content;
+    public String cnText;
 
     @RelatedToVia
     public Set<RDependsOn> dependedDiseases;

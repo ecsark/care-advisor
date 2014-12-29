@@ -12,8 +12,7 @@ import org.springframework.data.neo4j.annotation.StartNode;
 @RelationshipEntity(type = "DEPENDS_ON")
 public class RDependsOn extends AbstractEntity {
 
-    public RDependsOn() {
-    }
+    public RDependsOn() {}
 
     public RDependsOn(NDisease disease, NCheckup checkup) {
         this.disease = disease;

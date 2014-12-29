@@ -4,7 +4,6 @@ import messages.MEntityEntry;
 import models.NodeLabel;
 import org.neo4j.graphdb.GraphDatabaseService;
 
-import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,7 +13,6 @@ import java.util.stream.Collectors;
  * Date: 12/27/14
  * Time: 21:30
  */
-@Singleton
 public class EntitySearchEngine {
 
     //@Inject

@@ -1,7 +1,10 @@
 package models;
 
+import org.neo4j.graphdb.Direction;
+import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
+import org.springframework.data.neo4j.annotation.RelatedToVia;
 
 /**
  * User: ecsark
@@ -11,9 +14,11 @@ import org.springframework.data.neo4j.annotation.RelatedTo;
 @NodeEntity
 public class NSymptom extends AbstractEntity {
 
+    @Indexed
     public String cnText;
 
-    public Iterable<NDisease> diseases;
+    @RelatedToVia (elementClass = RCause.class, direction = Direction.INCOMING)
+    public Iterable<RCause> causedBy;
 
     public Iterable<NSession> sessions;
 

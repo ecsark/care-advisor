@@ -2,12 +2,8 @@ package controllers;
 
 import actions.LoginRequired;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import models.MFeedback;
-import models.MSession;
 import models.MUser;
-import play.cache.Cache;
-import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -27,42 +23,6 @@ public class Users extends Controller {
     public static final String SESSION_LOGIN_TIME_KEY = "lg_tm";
 
     private static Calendar calendar = Calendar.getInstance();
-
-    public static String sessionToken(String jToken) {
-        if (jToken == null)
-            return null;
-        return jToken + "_lg.key";
-    }
-
-    public static MSession getSessionAndCache(String jToken) {
-        if (jToken == null)
-            return null;
-        MSession mSession = (MSession) Cache.get(sessionToken(jToken));
-        if (mSession != null)
-            return mSession;
-        else {
-            mSession = MSession.authenticate(jToken);
-            if (mSession != null)
-                Cache.set(Users.sessionToken(jToken), mSession);
-        }
-        return mSession;
-    }
-
-    @Security.Authenticated(LoginRequired.class)
-    @Deprecated
-    public static Result newSession() {
-        try {
-            MSession lg = MSession.create(getUserId());
-
-            ObjectNode result = Json.newObject();
-            result.put("tk",lg.sessionId +"="+lg.token);
-            return ok(result);
-
-        } catch (NullPointerException e) {
-            return badRequest();
-        }
-    }
-
 
     @BodyParser.Of(BodyParser.Json.class)
     public static Result signup() {

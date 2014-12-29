@@ -11,17 +11,19 @@ POST          /feedback                 controllers.Users.feedback()
 POST          /users/signup             controllers.Users.signup()
 POST          /users/auth               controllers.Users.login()
 DELETE        /users/auth               controllers.Users.logout()
-POST          /users/newtk              controllers.Users.newSession()
 PUT           /users/update             controllers.Users.updateUser()
 
-GET           /medical/history          @controllers.Medical.getHistory()
-POST          /medical/ask              @controllers.Medical.ask()
-GET           /medical/session          @controllers.Medical.requestSession()
-GET           /medical/userinfo         @controllers.Medical.getUserInfo()
-POST          /medical/userinfo         @controllers.Medical.updateUserInfo()
-POST          /medical/submitdis        @controllers.Medical.submitDisease()
-POST          /medical/submitsym        @controllers.Medical.submitSymptoms()
-GET           /medical/listuser         @controllers.Medical.listUsers()
+GET           /medical/history          @controllers.OpenMedical.getHistory()
+POST          /medical/ask              @controllers.OpenMedical.ask()
+GET           /medical/session          @controllers.OpenMedical.requestSession()
+GET           /medical/userinfo         @controllers.OpenMedical.getUserInfo()
+POST          /medical/userinfo         @controllers.OpenMedical.updateUserInfo()
+POST          /medical/submitdis        @controllers.OpenMedical.submitDisease()
+POST          /medical/submitsym        @controllers.OpenMedical.submitSymptoms()
+
+GET           /admin/importnode         @controllers.MedicalAdmin.importNode()
+GET           /admin/importrel          @controllers.MedicalAdmin.importRelationship()
+GET           /admin/clearall           @controllers.MedicalAdmin.clearAll()
 
 
 # Map static resources from the /public folder to the /assets URL path

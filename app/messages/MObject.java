@@ -2,7 +2,7 @@ package messages;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -21,7 +21,7 @@ public class MObject {
 
     public MObject setParam(String key, Object value) {
         if (params == null)
-            params = new LinkedHashMap<>();
+            params = new HashMap<>();
         params.put(key, value);
         return this;
     }

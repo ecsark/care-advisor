@@ -9,4 +9,5 @@ import org.springframework.data.neo4j.repository.GraphRepository;
  * Time: 13:16
  */
 public interface DiseaseRepository extends GraphRepository<NDisease> {
+    NDisease getByCnText(String cnText);
 }

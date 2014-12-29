@@ -26,4 +26,6 @@ public class RCause extends AbstractEntity {
         this.disease = disease;
         this.symptom = symptom;
     }
+
+    public RCause() {}
 }

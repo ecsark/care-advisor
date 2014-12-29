@@ -9,4 +9,6 @@ import org.springframework.data.neo4j.repository.GraphRepository;
  * Time: 15:22
  */
 public interface SymptomGroupRepository extends GraphRepository<NSymptomGroup> {
+
+    NSymptomGroup getByCnText (String cnText);
 }

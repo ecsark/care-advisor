@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SymptomRepository extends GraphRepository<NSymptom> {
     NSymptom getById (long id);
-
+    NSymptom getByCnText (String cnText);
 }

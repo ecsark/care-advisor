@@ -10,7 +10,7 @@ import java.util.List;
  * Date: 12/18/14
  * Time: 00:28
  */
-public class MFurtherQuestions implements MResponse {
+public class MDialogue implements MResponse {
 
     public MQuestion createQuestion () {
         if (questions == null)

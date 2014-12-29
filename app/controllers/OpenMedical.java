@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import messages.*;
 import models.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -14,11 +15,9 @@ import repositories.DiseaseRepository;
 import repositories.SessionRepository;
 import repositories.SymptomRepository;
 import repositories.UserRepository;
-import services.EntitySearchEngine;
-import services.NeoKnowledgeBase;
+import services.MedicalIntelligence;
 import utils.JsonHelper;
 
-import javax.inject.Inject;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -29,21 +28,17 @@ import java.util.Objects;
  * Time: 00:09
  */
 @org.springframework.stereotype.Controller
-public class Medical extends Controller {
+public class OpenMedical extends Controller {
 
-    @Inject
-    private NeoKnowledgeBase kb;
-
-    //@Inject
-    private EntitySearchEngine search;
-
-    @Inject
+    @Autowired
+    private MedicalIntelligence medicalIntelligence;
+    @Autowired
     private UserRepository userRepository;
-    @Inject
+    @Autowired
     private SymptomRepository symptomRepository;
-    @Inject
+    @Autowired
     private DiseaseRepository diseaseRepository;
-    @Inject
+    @Autowired
     private SessionRepository sessionRepository;
 
     private static ObjectMapper mapper = new ObjectMapper()
@@ -63,7 +58,6 @@ public class Medical extends Controller {
             return ok(JsonHelper.generate(userInfo));
         }
     }
-
 
     @Security.Authenticated(LoginRequired.class)
     @BodyParser.Of(BodyParser.Json.class)
@@ -87,23 +81,13 @@ public class Medical extends Controller {
         }
     }
 
-    public Result listUsers () {
-        NUser u = new NUser();
-
-        NSession session = u.newSession();
-        userRepository.save(u);
-
-        Iterable<NUser> users = userRepository.findAll();
-        NUser t = users.iterator().next();
-        return ok();
-    }
-
 
 
     @BodyParser.Of(BodyParser.Json.class)
     public Result ask() {
         try {
-            MRecord question = mapper.treeToValue(request().body().asJson(), MRecord.class);
+            final List<NDisease> nDiseases = medicalIntelligence.relatedDiseases();
+            MDialogue questions = mapper.treeToValue(request().body().asJson(), MDialogue.class);
 
             MResponse response = null;
             if (session(Users.SESSION_USER_ID_KEY) != null) {
@@ -218,12 +202,12 @@ public class Medical extends Controller {
             return badRequest();
         }
     }
-
+/*
     @BodyParser.Of(BodyParser.Json.class)
     public Result searchDiseaseByName() {
         String disText = request().body().asJson().findValue("d_txt").textValue();
         List<MEntityEntry> candidates = search.searchDiseases(disText);
         return ok(JsonHelper.generate(new MCandidates(candidates)));
     }
-
+*/
 }

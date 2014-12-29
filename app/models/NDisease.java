@@ -4,6 +4,7 @@ import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedToVia;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -26,4 +27,12 @@ public class NDisease extends AbstractEntity {
 
     @RelatedToVia
     public Set<RDependsOn> dependentCheckups;
+
+    public RCause addSymptom (NSymptom symptom) {
+        if (causingSymptoms == null)
+            causingSymptoms = new HashSet<>();
+        RCause cause = new RCause(this, symptom);
+        causingSymptoms.add(cause);
+        return cause;
+    }
 }
