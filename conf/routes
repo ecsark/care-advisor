@@ -21,8 +21,8 @@ POST          /medical/userinfo         @controllers.OpenMedical.updateUserInfo(
 POST          /medical/submitdis        @controllers.OpenMedical.submitDisease()
 POST          /medical/submitsym        @controllers.OpenMedical.submitSymptoms()
 
-GET           /admin/importnode         @controllers.MedicalAdmin.importNode()
-GET           /admin/importrel          @controllers.MedicalAdmin.importRelationship()
+POST          /admin/importnode         @controllers.MedicalAdmin.importNode()
+POST          /admin/importrel          @controllers.MedicalAdmin.importRelationship()
 GET           /admin/clearall           @controllers.MedicalAdmin.clearAll()
 
 

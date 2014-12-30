@@ -99,7 +99,7 @@ public class OpenMedical extends Controller {
 
                 case MQuery.MORE_QUESTION: response = medicalIntelligence.furtherQuestions(eval, query); break;
 
-                case MQuery.ADVICE: break; // TODO
+                case MQuery.ADVICE: response = medicalIntelligence.getAdvice(eval); break;
 
                 default: // AUTO
                     int askedQuestions = query.getQuestionIds().size();

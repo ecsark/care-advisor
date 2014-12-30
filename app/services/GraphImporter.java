@@ -44,17 +44,23 @@ public class GraphImporter {
     private static final String REL_CAUSE = "CAUSE";
     private static final String REL_INCLUDE = "INCLUDE";
     private static final String REL_ASK = "ASK";
+    private static final String REL_DEPEND = "DEPEND";
 
     private static final String PARAM = "PARAM";
     private static final String QUESTION_TEXT = "TEXT";
     private static final String QUESTION_TYPE = "TYPE";
+    private static final String IMPORTANCE = "IMPORTANCE";
+
+    private static final String IMP_HIGH = "HIGH";
+    private static final String IMP_REG = "REG";
+
 
     @Transactional
     public void clearAll () {
-        symptomGroupRepo.deleteAll();
-        symptomRepo.deleteAll();
-        diseaseRepo.deleteAll();
-        questionGroupRepo.deleteAll();
+        //symptomGroupRepo.deleteAll();
+        //symptomRepo.deleteAll();
+        //diseaseRepo.deleteAll();
+        //questionGroupRepo.deleteAll();
         checkupRepo.deleteAll();
     }
 
@@ -156,6 +162,32 @@ public class GraphImporter {
                     NSymptom sp = symptomRepo.getByCnText(args[2]);
                     testNullThenException(sp, line, "symptom", args[2]);
                     sg.addSymptom(sp);
+                    break;
+                case REL_DEPEND:
+                    NDisease dis = diseaseRepo.getByCnText(args[0]);
+                    testNullThenException(dis, line, "disease", args[0]);
+                    NCheckup ck = checkupRepo.getByCnText(args[2]);
+                    testNullThenException(ck, line, "checkup", args[2]);
+                    index = 3;
+                    RDepend depend = ck.addDisease(dis);;
+                    while (index+1 < args.length) {
+                        switch (args[index]) {
+                            case IMPORTANCE:
+                                switch (args[index+1]) {
+                                    case IMP_HIGH: depend.importance = 2.0; break;
+                                    case IMP_REG: depend.importance = 1.0; break;
+                                    default: depend.importance = 1.0;
+                                }
+                                index += 2;
+                                break;
+
+                            default:
+                            //    throw new IllegalArgumentException("Line "+line+" relationship type "+args[index]+" unrecognized");
+                        }
+
+                    }
+                    template.save(depend);
+                    template.save(ck);
                     break;
                 default:
                     throw new IllegalArgumentException("Line "+line+" relationship type unrecognized");

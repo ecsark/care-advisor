@@ -11,4 +11,5 @@ import org.springframework.data.neo4j.repository.GraphRepository;
  */
 @RelationshipEntity(type = "DEPEND_ON")
 public interface CheckupRepository extends GraphRepository<NCheckup> {
+    NCheckup getByCnText(String cnText);
 }

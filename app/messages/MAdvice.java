@@ -2,6 +2,9 @@ package messages;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * User: ecsark
  * Date: 12/25/14
@@ -9,17 +12,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class MAdvice implements IMessage {
 
-    @JsonProperty("a_txt")
-    public String content;
+    @JsonProperty("ck")
+    public List<MCheckup> checkups = new ArrayList<>();
 
-    @JsonProperty("a_id")
-    public long id;
-
-    @JsonProperty("do_tm")
-    public long doTime;
-
-    @JsonProperty("ck_tm")
-    public long checkTime;
+    public MCheckup addCheckup () {
+        MCheckup obj = new MCheckup();
+        checkups.add(obj);
+        return obj;
+    }
 
     @Override
     public int getResponseType() {

@@ -1,6 +1,8 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
+import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.GraphImporter;
@@ -25,18 +27,24 @@ public class MedicalAdmin extends Controller {
         return ok();
     }
 
+    @BodyParser.Of(BodyParser.Json.class)
     public Result importNode() {
         try {
-            importer.importNodes(new File("/Users/ecsark/Projects/care-advisor/app/assets/node.txt"));
+            JsonNode json = request().body().asJson();
+            String fileName = json.findValue("f").asText();
+            importer.importNodes(new File(fileName));
             return ok("All nodes imported");
         } catch (IOException e) {
             return badRequest(e.getMessage());
         }
     }
 
+    @BodyParser.Of(BodyParser.Json.class)
     public Result importRelationship() {
         try {
-            importer.importRelationship(new File("/Users/ecsark/Projects/care-advisor/app/assets/relationship.txt"));
+            JsonNode json = request().body().asJson();
+            String fileName = json.findValue("f").asText();
+            importer.importRelationship(new File(fileName));
             return ok("All relationship imported");
         } catch (IOException e) {
             return badRequest(e.getMessage());

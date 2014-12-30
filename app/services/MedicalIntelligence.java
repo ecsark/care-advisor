@@ -111,6 +111,33 @@ public class MedicalIntelligence {
 
     }
 
+    @Transactional
+    public MAdvice getAdvice (EvaluationContext<NDisease> diseaseEvaluation) {
+        List<NDisease> topDiseases = diseaseEvaluation.getKeyOfTopNValue(3);
+        EvaluationContext<NCheckup> checkupEval = new EvaluationContext<>();
+
+        for (NDisease dis : topDiseases) {
+            for (RDepend dep :dis.dependentCheckups) {
+                template.fetch(dep);
+                checkupEval.plus(dep.checkup, dep.importance * diseaseEvaluation.eval.get(dis));
+            }
+        }
+
+        MAdvice advice = new MAdvice();
+
+        final List<Map.Entry<NCheckup, Double>> recommended = checkupEval.getEntryOfTopNValue(5);
+        for (Map.Entry<NCheckup, Double> r : recommended) {
+            MCheckup newCheckup = advice.addCheckup();
+            NCheckup ck = template.fetch(r.getKey());
+            newCheckup.id = ck.id;
+            newCheckup.importance = r.getValue();
+            newCheckup.name = ck.cnText;
+        }
+
+        return advice;
+
+    }
+
 
     @Transactional
     public MReply furtherQuestions (EvaluationContext<NDisease> diseaseEvaluation, MQuery query) {
