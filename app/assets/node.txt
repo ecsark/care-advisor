@@ -44,6 +44,7 @@
 大量酸液:Symptom
 无酸味:Symptom
 
+发热:Symptom
 黄疸:Symptom
 腹泻:Symptom
 便秘:Symptom
@@ -66,36 +67,36 @@
 眼症状:Symptom
 阴道流血:Symptom
 
-部位:QuestionGroup
-程度:QuestionGroup
-缓急:QuestionGroup
-性质:QuestionGroup
-持续:QuestionGroup
-放射痛:QuestionGroup
-缓解因素:QuestionGroup
-诱发因素:QuestionGroup
+您腹痛的部位有？:QuestionGroup
+您腹痛的程度？:QuestionGroup
+您腹痛的发生是？:QuestionGroup
+您腹痛的感觉是？:QuestionGroup
+您腹痛是持续还是阵发？:QuestionGroup
+您除了腹痛，有其他部位射痛吗？:QuestionGroup
+您腹痛的缓解因素？:QuestionGroup
+您腹痛的诱发因素？:QuestionGroup
 
-呕吐物:QuestionGroup
+您有以下的呕吐物吗？:QuestionGroup
 
-有黄疸:QuestionGroup
-有腹泻:QuestionGroup
-有便秘:QuestionGroup
-有腹胀:QuestionGroup
-有呕血/黑便:QuestionGroup
-有食欲缺乏:QuestionGroup
-有乏力:QuestionGroup
-有皮肤反应:QuestionGroup
-有关节痛:QuestionGroup
-有水肿:QuestionGroup
-有多尿:QuestionGroup
-有血尿:QuestionGroup
-有泡沫尿:QuestionGroup
-有尿道痛:QuestionGroup
-有尿频尿急尿痛:QuestionGroup
-有肛门坠张感:QuestionGroup
-有胸痛:QuestionGroup
-有心律失常:QuestionGroup
-有神经精神症状:QuestionGroup
-有眼症状:QuestionGroup
-有阴道流血:QuestionGroup
+您有出现黄疸吗？:QuestionGroup
+您有出现腹泻吗？:QuestionGroup
+您有出现便秘吗？:QuestionGroup
+您有出现腹胀吗？:QuestionGroup
+您有出现呕血/黑便吗？:QuestionGroup
+您有出现食欲缺乏吗？:QuestionGroup
+您有出现乏力吗？:QuestionGroup
+您有出现皮肤反应吗？:QuestionGroup
+您有出现关节痛吗？:QuestionGroup
+您有出现水肿吗？:QuestionGroup
+您有出现多尿吗？:QuestionGroup
+您有出现血尿吗？:QuestionGroup
+您有出现泡沫尿吗？:QuestionGroup
+您有出现尿道痛吗？:QuestionGroup
+您有出现尿频尿急尿痛吗？:QuestionGroup
+您有出现肛门坠张感吗？:QuestionGroup
+您有出现胸痛吗？:QuestionGroup
+您有出现心律失常吗？:QuestionGroup
+您有出现神经精神症状吗？:QuestionGroup
+您有出现眼症状吗？:QuestionGroup
+您有出现阴道流血吗？:QuestionGroup
 

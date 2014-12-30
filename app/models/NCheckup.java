@@ -15,5 +15,5 @@ public class NCheckup extends AbstractEntity {
     public String cnText;
 
     @RelatedToVia
-    public Set<RDependsOn> dependedDiseases;
+    public Set<RDependOn> dependedDiseases;
 }

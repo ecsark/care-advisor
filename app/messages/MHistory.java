@@ -10,7 +10,7 @@ import java.util.List;
  * Date: 12/24/14
  * Time: 17:14
  */
-public class MHistory implements MResponse {
+public class MHistory implements IMessage {
 
     @JsonProperty("h")
     public List<MRecord> history;

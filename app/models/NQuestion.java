@@ -15,7 +15,7 @@ import java.util.Set;
  * Time: 19:53
  */
 @NodeEntity
-public class NQuestionGroup extends AbstractEntity {
+public class NQuestion extends AbstractEntity {
 
     @Indexed
     public String cnText;
@@ -23,11 +23,11 @@ public class NQuestionGroup extends AbstractEntity {
     public Integer qType;
 
     @Fetch
-    @RelatedToVia
-    public Set<RQuestion> questions=new HashSet<>();
+    @RelatedToVia(elementClass = RAsk.class, type = "ASK")
+    public Set<RAsk> questions=new HashSet<>();
 
-    public RQuestion addChoice (NSymptom symptom, String choiceText) {
-        RQuestion question = new RQuestion(this, symptom);
+    public RAsk addChoice (NSymptom symptom, String choiceText) {
+        RAsk question = new RAsk(this, symptom);
         question.cnText = choiceText;
         questions.add(question);
         return question;

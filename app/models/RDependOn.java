@@ -9,12 +9,12 @@ import org.springframework.data.neo4j.annotation.StartNode;
  * Date: 12/29/14
  * Time: 15:39
  */
-@RelationshipEntity(type = "DEPENDS_ON")
-public class RDependsOn extends AbstractEntity {
+@RelationshipEntity(type = "DEPEND_ON")
+public class RDependOn extends AbstractEntity {
 
-    public RDependsOn() {}
+    public RDependOn() {}
 
-    public RDependsOn(NDisease disease, NCheckup checkup) {
+    public RDependOn(NDisease disease, NCheckup checkup) {
         this.disease = disease;
         this.checkup = checkup;
     }

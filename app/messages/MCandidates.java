@@ -10,7 +10,7 @@ import java.util.List;
  * Date: 12/28/14
  * Time: 10:07
  */
-public class MCandidates implements MResponse {
+public class MCandidates implements IMessage {
 
     public MCandidates () {}
 
@@ -18,11 +18,12 @@ public class MCandidates implements MResponse {
         this.entities = entities;
     }
 
-    public MCandidates addEntityEntry (MEntityEntry entity) {
+    public MEntityEntry addEntityEntry () {
         if (entities == null)
             entities = new ArrayList<>();
+        MEntityEntry entity = new MEntityEntry();
         entities.add(entity);
-        return this;
+        return entity;
     }
 
     @JsonProperty("ent")

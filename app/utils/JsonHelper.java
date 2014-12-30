@@ -2,7 +2,7 @@ package utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import messages.MResponse;
+import messages.IMessage;
 import play.libs.Json;
 
 /**
@@ -19,7 +19,9 @@ public class JsonHelper {
         return response;
     }
 
-    public static JsonNode generate (MResponse object) {
+    public static JsonNode generate (IMessage object) {
+        if (object == null)
+            return null;
         return generate(object, object.getResponseType());
     }
 

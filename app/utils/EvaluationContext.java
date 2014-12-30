@@ -69,6 +69,28 @@ public class EvaluationContext<T> {
         return maxValueKey;
     }
 
+    public double getMaxValue() {
+        double maxValue = Double.MIN_VALUE;
+        for (Map.Entry<T, Double> entry : eval.entrySet()) {
+            if (entry.getValue() > maxValue) {
+                maxValue = entry.getValue();
+            }
+        }
+        return maxValue;
+    }
+
+    public List<Map.Entry<T, Double>> getEntryOfTopNValue(int n) {
+
+        List<Map.Entry<T, Double>> entries =new ArrayList<>();
+
+        eval.entrySet().stream()
+                .sorted(Comparator.comparing(e -> -e.getValue()))
+                .limit(n)
+                .forEach(e -> entries.add(e));
+
+        return entries;
+    }
+
     public List<T> getKeyOfTopNValue(int n) {
 
         List<T> keys =new ArrayList<>();

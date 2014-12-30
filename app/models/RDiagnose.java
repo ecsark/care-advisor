@@ -12,15 +12,15 @@ import java.util.Date;
  * Date: 12/29/14
  * Time: 14:46
  */
-@RelationshipEntity(type = "CAUSES")
-public class RDiagnosis extends AbstractEntity {
+@RelationshipEntity(type = "CAUSE")
+public class RDiagnose extends AbstractEntity {
 
-    public RDiagnosis (NSession session, NDisease disease) {
+    public RDiagnose(NSession session, NDisease disease) {
         this.session = session;
         this.disease = disease;
     }
 
-    public RDiagnosis () {}
+    public RDiagnose() {}
 
     public Timestamp reportTime = new Timestamp(System.currentTimeMillis());
 

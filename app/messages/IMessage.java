@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * Date: 12/25/14
  * Time: 00:37
  */
-public interface MResponse {
+public interface IMessage {
     @JsonIgnore
     int getResponseType ();
 }

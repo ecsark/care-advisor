@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Date: 12/25/14
  * Time: 00:24
  */
-public class MAdvice implements MResponse {
+public class MAdvice implements IMessage {
 
     @JsonProperty("a_txt")
     public String content;

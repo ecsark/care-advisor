@@ -21,14 +21,14 @@ public class NSession extends AbstractEntity {
 
     //TODO: add token to enhance security
 
-    @RelatedTo(elementClass = NUser.class, type = "COMMITS", direction = Direction.INCOMING)
+    @RelatedTo(elementClass = NUser.class, type = "COMMIT", direction = Direction.INCOMING)
     public NUser user;
 
-    @RelatedTo(elementClass = NSymptom.class, type = "REPORTS", direction = Direction.OUTGOING)
+    @RelatedTo(elementClass = NSymptom.class, type = "REPORT", direction = Direction.OUTGOING)
     public Set<NSymptom> symptoms;
 
     @RelatedToVia
-    public Set<RDiagnosis> diagnosed;
+    public Set<RDiagnose> diagnosed;
 
     @GraphProperty(propertyType = Long.class)
     public Timestamp created = new Timestamp(Calendar.getInstance().getTime().getTime());
@@ -42,12 +42,12 @@ public class NSession extends AbstractEntity {
         return symptom;
     }
 
-    public RDiagnosis addDiagnosedDisease(NDisease disease) {
+    public RDiagnose addDiagnosedDisease(NDisease disease) {
         if (disease == null)
             return null;
         if (diagnosed == null)
             diagnosed = new LinkedHashSet<>();
-        RDiagnosis diag = new RDiagnosis(this, disease);
+        RDiagnose diag = new RDiagnose(this, disease);
         diagnosed.add(diag);
         return diag;
     }

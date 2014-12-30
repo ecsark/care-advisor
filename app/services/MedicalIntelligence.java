@@ -1,8 +1,6 @@
 package services;
 
-import messages.MDialogue;
-import messages.MQuestion;
-import messages.MedicalChoice;
+import messages.*;
 import models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
@@ -11,9 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import repositories.*;
 import utils.EvaluationContext;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -28,7 +26,7 @@ public class MedicalIntelligence {
     @Autowired
     private DiseaseRepository diseaseRepo;
     @Autowired
-    private QuestionGroupRepository questionGroupRepo;
+    private QuestionRepository questionRepo;
     @Autowired
     private SymptomGroupRepository symptomGroupRepo;
     @Autowired
@@ -36,13 +34,8 @@ public class MedicalIntelligence {
     @Autowired
     private Neo4jTemplate template;
 
-    public List<NDisease> relatedDiseases () {
-        List<Long> questions = new ArrayList<>();
-        questions.add((long)429); questions.add((long)430);
-        return questionGroupRepo.getRelatedDiseases(questions);
-    }
-
-    public EvaluationContext<NDisease> evaluate (MDialogue answer) {
+    @Transactional
+    public EvaluationContext<NDisease> evaluate (MQuery query) {
 
         EvaluationContext<NDisease> fScores = new EvaluationContext<>();
 
@@ -50,19 +43,37 @@ public class MedicalIntelligence {
         EvaluationContext<NDisease> unmatched = new EvaluationContext<>();
         EvaluationContext<NDisease> missed = new EvaluationContext<>();
 
-        //TODO: security
-        List<NDisease> relatedDiseases = questionGroupRepo.getRelatedDiseases(answer.getQuestionIds());
+        //TODO: sanity check
+        List<NDisease> relatedDiseases = questionRepo.getRelatedDiseases(query.getQuestionIds());
+
+        List<MItem> mainQuestions = query.mainAnswer.items;
+        List<Long> includedSymptomGroupsIds = mainQuestions.stream()
+                .filter(item -> item.answerValue != null && item.answerValue > 0.8)
+                .map(item -> item.id).collect(Collectors.toList());
+        List<Long> excludedSymptomGroupsIds = mainQuestions.stream()
+                .filter(item -> item.answerValue != null && item.answerValue < 0.2)
+                .map(item -> item.id).collect(Collectors.toList());
+
+        //TODO: include in fscore computation
+        //List<Long> excludedSymptomIds = symptomGroupRepo.getRelatedSymptomIds(excludedSymptomGroupsIds);
+
+        List<NDisease> groupIncludedDiseases = symptomGroupRepo.getRelatedDiseases(includedSymptomGroupsIds);
+
+        // TODO: probably merge them
+        if (relatedDiseases.size() == 0)
+            relatedDiseases = groupIncludedDiseases;
+
 
         for (NDisease disease : relatedDiseases) {
             Map<Long, RCause> symptomToCause = disease.mapBySymptomId();
 
-            for (MQuestion ans : answer.questions) {
+            for (MAnswer ans : query.answers) {
                 boolean alreadyUnmatched = false;
                 boolean alreadyMatched = false;
                 boolean probablyMissed = true;
-                for (MedicalChoice choice : ans.options) {
+                for (MItem item : ans.items) {
                     // TODO: reason more about cause
-                    if (symptomToCause.containsKey(choice.answerId)) { // disease 1, user 1
+                    if (symptomToCause.containsKey(item.id)) { // disease 1, user 1
                         probablyMissed = false;
                         if (!alreadyMatched) {
                             matched.plus(disease);
@@ -84,14 +95,43 @@ public class MedicalIntelligence {
         return fScores;
     }
 
+    public MReply firstQuestion () {
+
+        MReply dialog = new MReply();
+        MQuestion ask = dialog.createQuestion();
+        ask.questionId = NSymptomGroup.getQuestionId();
+        ask.questionType = NQuestion.SINGLE_CHOICE;
+        symptomGroupRepo.findAll().forEach(sgroup -> {
+            MItem item = ask.createItem();
+            item.id = sgroup.id;
+            item.questionText = sgroup.cnText;
+        });
+
+        return dialog;
+
+    }
+
+
     @Transactional
-    public MDialogue furtherQuestions (EvaluationContext<NDisease> diseaseEvaluation, MDialogue answer) {
+    public MReply furtherQuestions (EvaluationContext<NDisease> diseaseEvaluation, MQuery query) {
+
+        if (diseaseEvaluation.eval.isEmpty())
+            return firstQuestion();
+
+        List<MItem> mainQuestions = query.mainAnswer.items;
+        Set<Long> includedSymptomGroupsIds = mainQuestions.stream()
+                .filter(item -> item.answerValue != null && item.answerValue > 0.8)
+                .map(item -> item.id).collect(Collectors.toSet());
+        Set<Long> excludedSymptomGroupsIds = mainQuestions.stream()
+                .filter(item -> item.answerValue != null && item.answerValue < 0.2)
+                .map(item -> item.id).collect(Collectors.toSet());
 
 
-        List<NDisease> topDiseases = diseaseEvaluation.getKeyOfTopNValue(5); // TODO: reason about this threshold
+
+        List<NDisease> topDiseases = diseaseEvaluation.getKeyOfTopNValue(10); // TODO: reason about this threshold
         NDisease top1 = topDiseases.get(0);
 
-        List<Long> askedSymptomIds = questionGroupRepo.getRelatedSymptoms(answer.getQuestionIds())
+        List<Long> askedSymptomIds = questionRepo.getRelatedSymptoms(query.getQuestionIds())
                 .stream().map(s -> s.id)
                 .collect(Collectors.toList());
 
@@ -102,6 +142,11 @@ public class MedicalIntelligence {
 
         EvaluationContext<NSymptom> symEval = new EvaluationContext<>();
         for (NSymptom symptom : restSymptoms) {
+            // if symptom group is excluded
+            template.fetch(symptom);
+            if (symptom.symptomGroup != null &&
+                    excludedSymptomGroupsIds.contains(symptom.symptomGroup.id))
+                continue;
 
             int hit = 0;
 
@@ -115,21 +160,34 @@ public class MedicalIntelligence {
             symEval.put(symptom, entropy);
         }
 
-        NSymptom niceQuestion = symEval.getKeyOfMaxValue();
-        NQuestionGroup questionGroup = fetch(niceQuestion.question).questionGroup;
 
-        MDialogue dialog = new MDialogue();
-
+        MReply dialog = new MReply();
         MQuestion ask = dialog.createQuestion();
-        ask.questionId = questionGroup.id;
-        ask.questionType = questionGroup.qType;
-        ask.questionText = questionGroup.cnText;
-        for (RQuestion q : questionGroup.questions) {
-            ask.createChoice()
-                    .setAnswerId(q.symptomChoice.id)
-                    .setAnswerText(q.cnText);
-        }
 
+        NSymptom niceSymptom = symEval.getKeyOfMaxValue();
+        NSymptomGroup sgroup = niceSymptom.symptomGroup;
+        // SymptomGroup asked
+        if (sgroup != null
+                && !includedSymptomGroupsIds.contains(sgroup.id)) {
+            template.fetch(sgroup);
+            ask.questionId = NSymptomGroup.getQuestionId(); //
+            ask.questionType = NQuestion.BINARY;
+            ask.questionText = sgroup.getQuestion();
+            MItem item = ask.createItem();
+            item.id = sgroup.id;
+            item.questionText = sgroup.cnText;
+
+        } else {
+            NQuestion questionGroup = fetch(niceSymptom.question).question;
+            ask.questionId = questionGroup.id;
+            ask.questionType = questionGroup.qType;
+            ask.questionText = questionGroup.cnText;
+            for (RAsk q : questionGroup.questions) {
+                MItem item = ask.createItem();
+                item.id = q.symptomChoice.id;
+                item.questionText = q.cnText;
+            }
+        }
         return dialog;
     }
 

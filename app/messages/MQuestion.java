@@ -14,7 +14,6 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MQuestion {
 
-
     @JsonProperty("q_id")
     public long questionId;
 
@@ -39,15 +38,15 @@ public class MQuestion {
         return this;
     }
 
-    @JsonProperty("opt")
-    public List<MedicalChoice> options = new ArrayList<>();
+    @JsonProperty("items")
+    public List<MItem> items = new ArrayList<>();
 
 
-    public MedicalChoice createChoice () {
+    public MItem createItem() {
 
-        MedicalChoice choice = new MedicalChoice();
-        options.add(choice);
-        return choice;
+        MItem item = new MItem();
+        items.add(item);
+        return item;
     }
 
 

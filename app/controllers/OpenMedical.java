@@ -16,9 +16,12 @@ import repositories.SessionRepository;
 import repositories.SymptomRepository;
 import repositories.UserRepository;
 import services.MedicalIntelligence;
+import utils.EvaluationContext;
 import utils.JsonHelper;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -85,16 +88,48 @@ public class OpenMedical extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public Result ask() {
         try {
-            MDialogue answer = mapper.treeToValue(request().body().asJson(), MDialogue.class);
+            MQuery query = mapper.treeToValue(request().body().asJson(), MQuery.class);
 
+            IMessage response = null;
             // TODO: user customized
-            MDialogue question = medicalIntelligence.furtherQuestions(medicalIntelligence.evaluate(answer), answer);
+            EvaluationContext<NDisease> eval = medicalIntelligence.evaluate(query);
 
-            return ok(JsonHelper.generate(question));
+            switch (query.status) {
+                case MQuery.DIAGNOSIS: response = generateCandidates(eval, 5); break;//TODO: customize limit
+
+                case MQuery.MORE_QUESTION: response = medicalIntelligence.furtherQuestions(eval, query); break;
+
+                case MQuery.ADVICE: break; // TODO
+
+                default: // AUTO
+                    int askedQuestions = query.getQuestionIds().size();
+                    double evalPerf = eval.getMaxValue();
+
+                    if (askedQuestions > 12 || (askedQuestions > 5 && evalPerf > 0.8))
+                        response = generateCandidates(eval, 5);//TODO: customize limit
+
+                    else
+                        response = medicalIntelligence.furtherQuestions(eval, query);
+            }
+
+            return ok(JsonHelper.generate(response));
 
         } catch (JsonProcessingException e) {
             return badRequest("Illegal format");
         }
+    }
+
+
+    private MCandidates generateCandidates (EvaluationContext<NDisease> eval, int limit) {
+        MCandidates candidates = new MCandidates();
+        final List<Map.Entry<NDisease, Double>> topCandidates = eval.getEntryOfTopNValue(limit);
+        for (Map.Entry<NDisease, Double> entry : topCandidates) {
+            final MEntityEntry entity = candidates.addEntityEntry();
+            entity.id = entry.getKey().id;
+            entity.name = entry.getKey().cnText;
+            entity.value = entry.getValue();
+        }
+        return candidates;
     }
 
 
@@ -110,7 +145,7 @@ public class OpenMedical extends Controller {
             record.setCreatedTime(s.created).setSessionId(s.id);
             for (NSymptom nsym : s.symptoms)
                 record.addSymptom().setName(nsym.cnText).setId(nsym.id);
-            for (RDiagnosis diag : s.diagnosed) {
+            for (RDiagnose diag : s.diagnosed) {
                 NDisease ndis = diag.disease;
                 MObject obj = record.addDisease().setName(ndis.cnText).setId(ndis.id);
                 if (diag.diagDate != null)
@@ -178,7 +213,7 @@ public class OpenMedical extends Controller {
                 NDisease d = diseaseRepository.findOne(obj.id);
                 if (d == null)
                     return notFound("Invalid Disease ID: " + Long.toString(obj.id));
-                RDiagnosis diag = s.addDiagnosedDisease(d);
+                RDiagnose diag = s.addDiagnosedDisease(d);
 
                 Date time = (Date) obj.getParam("diag_tm");
                 if (time != null)

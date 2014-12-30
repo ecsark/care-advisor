@@ -9,7 +9,7 @@ import org.springframework.data.neo4j.annotation.StartNode;
  * Date: 12/29/14
  * Time: 13:56
  */
-@RelationshipEntity(type = "CAUSES")
+@RelationshipEntity(type = "CAUSE")
 public class RCause extends AbstractEntity {
 
     public Integer operator;

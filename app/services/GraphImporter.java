@@ -27,7 +27,7 @@ public class GraphImporter {
     @Autowired
     private DiseaseRepository diseaseRepo;
     @Autowired
-    private QuestionGroupRepository questionGroupRepo;
+    private QuestionRepository questionGroupRepo;
     @Autowired
     private SymptomGroupRepository symptomGroupRepo;
     @Autowired
@@ -87,7 +87,7 @@ public class GraphImporter {
                     symptomGroupRepo.save(g);
                     break;
                 case NODE_QUESTION_GROUP:
-                    NQuestionGroup q = new NQuestionGroup();
+                    NQuestion q = new NQuestion();
                     q.cnText = args[0];
                     questionGroupRepo.save(q);
                     break;
@@ -125,17 +125,18 @@ public class GraphImporter {
                 case REL_ASK:
                     testFewArgThenException(7, args.length, line);
 
-                    NQuestionGroup qg = questionGroupRepo.getByCnText(args[0]);
-                    testNullThenException(qg, line, "question group", args[0]);
+                    NQuestion qg = questionGroupRepo.getByCnText(args[0]);
+                    testNullThenException(qg, line, "question", args[0]);
 
                     NSymptom sy = symptomRepo.getByCnText(args[2]);
                     testNullThenException(sy, line, "symptom", args[2]);
 
                     int index = 3;
+                    RAsk ask = null;
                     while (index+1 < args.length) {
                         switch (args[index]) {
                             case QUESTION_TEXT:
-                                qg.addChoice(sy, args[index+1]);
+                                ask = qg.addChoice(sy, args[index+1]);
                                 index += 2;
                                 break;
                             case QUESTION_TYPE:
@@ -146,6 +147,8 @@ public class GraphImporter {
                                 throw new IllegalArgumentException("Line "+line+" relationship type "+args[index]+" unrecognized");
                         }
                     }
+                    template.save(ask);
+                    template.save(qg);
                     break;
                 case REL_INCLUDE:
                     NSymptomGroup sg = symptomGroupRepo.getByCnText(args[0]);

@@ -9,6 +9,6 @@ import org.springframework.data.neo4j.repository.GraphRepository;
  * Date: 12/29/14
  * Time: 15:23
  */
-@RelationshipEntity(type = "DEPENDS_ON")
+@RelationshipEntity(type = "DEPEND_ON")
 public interface CheckupRepository extends GraphRepository<NCheckup> {
 }

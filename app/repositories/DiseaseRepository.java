@@ -1,7 +1,6 @@
 package repositories;
 
 import models.NDisease;
-import models.NSymptom;
 import org.springframework.data.neo4j.repository.GraphRepository;
 
 /**

@@ -9,10 +9,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class MEntityEntry {
 
-    @JsonProperty("name")
+    @JsonProperty("d_txt")
     public String name;
 
-    @JsonProperty("id")
+    @JsonProperty("d_id")
     public Long id;
 
+    @JsonProperty("d_eval")
+    public Double value;
 }

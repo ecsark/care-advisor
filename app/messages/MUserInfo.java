@@ -9,7 +9,7 @@ import java.util.Date;
  * Date: 12/28/14
  * Time: 23:42
  */
-public class MUserInfo implements MResponse {
+public class MUserInfo implements IMessage {
     @JsonProperty("sex")
     public Integer sex;
 

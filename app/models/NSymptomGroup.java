@@ -1,6 +1,7 @@
 package models;
 
 import org.neo4j.graphdb.Direction;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
@@ -19,7 +20,17 @@ public class NSymptomGroup extends AbstractEntity{
     @Indexed
     public String cnText;
 
-    @RelatedTo(type = "INCLUDES", direction = Direction.OUTGOING)
+    @Transient
+    public String getQuestion() {
+        return "您有"+cnText+"吗？";
+    }
+
+    @Transient
+    public static int getQuestionId() {
+        return 0;
+    }
+
+    @RelatedTo(type = "INCLUDE", direction = Direction.OUTGOING)
     public Set<NSymptom> symptoms;
 
     public NSymptom addSymptom (NSymptom symptom) {
@@ -28,4 +39,6 @@ public class NSymptomGroup extends AbstractEntity{
         symptoms.add(symptom);
         return symptom;
     }
+
+    public NSymptomGroup() {}
 }

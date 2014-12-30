@@ -24,7 +24,7 @@ public class NUser extends AbstractEntity {
     @Transient
     public static final String REF_ID_INDEX = "refId";
 
-    @Indexed()
+    @Indexed
     public Long refId;
 
     // 0: female, 1: male, other: unknown
@@ -32,7 +32,7 @@ public class NUser extends AbstractEntity {
 
     public Date birthDate;
 
-    @RelatedTo(elementClass = NSession.class, type = "COMMITS", direction = Direction.OUTGOING)
+    @RelatedTo(elementClass = NSession.class, type = "COMMIT", direction = Direction.OUTGOING)
     public Set<NSession> sessions = new HashSet<>();
 
     public NSession newSession() {
@@ -44,4 +44,5 @@ public class NUser extends AbstractEntity {
     @GraphProperty(propertyType = Long.class)
     public Timestamp created = new Timestamp(Calendar.getInstance().getTime().getTime());
 
+    public NUser() {}
 }

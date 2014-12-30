@@ -26,10 +26,10 @@ public class NDisease extends AbstractEntity {
     public Set<RCause> causingSymptoms;
 
     @RelatedToVia
-    public Iterable<RDiagnosis> diagnosedSessions;
+    public Iterable<RDiagnose> diagnosedSessions;
 
     @RelatedToVia
-    public Set<RDependsOn> dependentCheckups;
+    public Set<RDependOn> dependentCheckups;
 
     public RCause addSymptom (NSymptom symptom) {
         if (causingSymptoms == null)

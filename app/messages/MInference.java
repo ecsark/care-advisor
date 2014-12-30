@@ -8,7 +8,7 @@ import java.util.List;
  * Date: 12/25/14
  * Time: 00:14
  */
-public class MInference implements MResponse {
+public class MInference implements IMessage {
 
     List<MObject> diseases;
 
