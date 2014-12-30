@@ -6,6 +6,8 @@ import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 import org.springframework.data.neo4j.annotation.RelatedToVia;
 
+import java.util.Set;
+
 /**
  * User: ecsark
  * Date: 12/28/14
@@ -17,11 +19,12 @@ public class NSymptom extends AbstractEntity {
     @Indexed
     public String cnText;
 
-    @RelatedToVia (elementClass = RCause.class, direction = Direction.INCOMING)
-    public Iterable<RCause> causedBy;
+    @RelatedToVia (type = "CAUSES", elementClass = RCause.class, direction = Direction.INCOMING)
+    public Set<RCause> causedBy;
 
-    public Iterable<NSession> sessions;
+    @RelatedTo (elementClass = NSession.class)
+    public Set<NSession> sessions;
 
-    @RelatedTo(type="ASKS")
-    public NQuestionGroup question;
+    @RelatedToVia(type="ASKS", elementClass = RQuestion.class, direction = Direction.INCOMING)
+    public RQuestion question;
 }

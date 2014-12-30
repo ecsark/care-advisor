@@ -1,6 +1,7 @@
 package repositories;
 
 import models.NDisease;
+import models.NSymptom;
 import org.springframework.data.neo4j.repository.GraphRepository;
 
 /**
@@ -10,4 +11,5 @@ import org.springframework.data.neo4j.repository.GraphRepository;
  */
 public interface DiseaseRepository extends GraphRepository<NDisease> {
     NDisease getByCnText(String cnText);
+
 }

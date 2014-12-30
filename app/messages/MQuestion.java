@@ -14,10 +14,6 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MQuestion {
 
-    public static int SINGLE_CHOICE = 0;
-    public static int MULTIPLE_CHOICES = 1;
-    public static int INTEGER_RANGE = 2;
-    public static int FLOAT_RANGE = 3;
 
     @JsonProperty("q_id")
     public long questionId;
@@ -26,7 +22,7 @@ public class MQuestion {
     public String questionText;
 
     @JsonProperty("type")
-    public int questionType;
+    public Integer questionType;
 
     public MQuestion setQuestionId(long questionId) {
         this.questionId = questionId;
@@ -38,46 +34,21 @@ public class MQuestion {
         return this;
     }
 
-    public MQuestion setQuestionType(int questionType) {
+    public MQuestion setQuestionType(Integer questionType) {
         this.questionType = questionType;
         return this;
     }
 
     @JsonProperty("opt")
-    public List<MedicalChoice> options;
+    public List<MedicalChoice> options = new ArrayList<>();
 
-    public MQuestion() {}
 
     public MedicalChoice createChoice () {
-        if (options == null)
-            options = new ArrayList<>();
+
         MedicalChoice choice = new MedicalChoice();
         options.add(choice);
         return choice;
     }
 
-    public class MedicalChoice {
 
-        public MedicalChoice() {}
-        public MedicalChoice(long answerId, String answerText) {
-            this.answerId = answerId;
-            this.answerText = answerText;
-        }
-
-        @JsonProperty("a_id")
-        public long answerId;
-
-        @JsonProperty("a_txt")
-        public String answerText;
-
-        public MedicalChoice setAnswerId(long answerId) {
-            this.answerId = answerId;
-            return this;
-        }
-
-        public MedicalChoice setAnswerText(String answerText) {
-            this.answerText = answerText;
-            return this;
-        }
-    }
 }

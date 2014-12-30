@@ -46,7 +46,8 @@ public class GraphImporter {
     private static final String REL_ASK = "ASK";
 
     private static final String PARAM = "PARAM";
-    private static final String TEXT = "TEXT";
+    private static final String QUESTION_TEXT = "TEXT";
+    private static final String QUESTION_TYPE = "TYPE";
 
     @Transactional
     public void clearAll () {
@@ -63,7 +64,7 @@ public class GraphImporter {
         String line;
         while ((line = br.readLine()) != null) {
             line = line.trim();
-            if (line.equals(""))
+            if (line.equals("") || line.startsWith("#"))
                 continue;
             String[] args = line.split(":");
 
@@ -108,7 +109,7 @@ public class GraphImporter {
         String line;
         while ((line = br.readLine()) != null) {
             line = line.trim();
-            if (line.equals(""))
+            if (line.equals("") || line.startsWith("#"))
                 continue;
             String[] args = line.split(":");
 
@@ -122,7 +123,7 @@ public class GraphImporter {
                     testNullThenException(s, line, "symptom", args[2]);d.addSymptom(s);
                     break;
                 case REL_ASK:
-                    testFewArgThenException(5, args.length, line);
+                    testFewArgThenException(7, args.length, line);
 
                     NQuestionGroup qg = questionGroupRepo.getByCnText(args[0]);
                     testNullThenException(qg, line, "question group", args[0]);
@@ -130,7 +131,21 @@ public class GraphImporter {
                     NSymptom sy = symptomRepo.getByCnText(args[2]);
                     testNullThenException(sy, line, "symptom", args[2]);
 
-                    qg.addChoice(sy, args[4]);
+                    int index = 3;
+                    while (index+1 < args.length) {
+                        switch (args[index]) {
+                            case QUESTION_TEXT:
+                                qg.addChoice(sy, args[index+1]);
+                                index += 2;
+                                break;
+                            case QUESTION_TYPE:
+                                qg.qType = Integer.parseInt(args[index+1]);
+                                index += 2;
+                                break;
+                            default:
+                                throw new IllegalArgumentException("Line "+line+" relationship type "+args[index]+" unrecognized");
+                        }
+                    }
                     break;
                 case REL_INCLUDE:
                     NSymptomGroup sg = symptomGroupRepo.getByCnText(args[0]);

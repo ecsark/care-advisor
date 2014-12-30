@@ -1,7 +1,6 @@
 package utils;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: ecsark
@@ -16,17 +15,24 @@ public class EvaluationContext<T> {
     public double baseMultiply = 1.2;
     public double initial = 0.0;
 
-    public EvaluationContext () {}
+    public EvaluationContext () {
+        eval = new HashMap<T, Double>();
+    }
 
     public EvaluationContext(double baseAdd, double baseMultiply, double initial) {
+        this();
         this.baseAdd = baseAdd;
         this.baseMultiply = baseMultiply;
         this.initial = initial;
     }
 
+    public double getOrZero (T key) {
+        if (!eval.containsKey(key))
+            return 0;
+        return eval.get(key);
+    }
+
     public void put (T key, Double value) {
-        if (eval == null)
-            eval = new HashMap<>();
         eval.put(key, value);
     }
 
@@ -35,8 +41,6 @@ public class EvaluationContext<T> {
     }
 
     public void plus (T key, Double addValue) {
-        if (eval == null)
-            eval = new HashMap<>();
         if (!eval.containsKey(key))
             eval.put(key, initial);
         eval.put(key, eval.get(key) + addValue);
@@ -47,8 +51,6 @@ public class EvaluationContext<T> {
     }
 
     public void multiply (T key, Double multiplyValue) {
-        if (eval == null)
-            eval = new HashMap<>();
         if (!eval.containsKey(key))
             eval.put(key, initial);
         eval.put(key, eval.get(key) * multiplyValue);
@@ -66,6 +68,19 @@ public class EvaluationContext<T> {
         }
         return maxValueKey;
     }
+
+    public List<T> getKeyOfTopNValue(int n) {
+
+        List<T> keys =new ArrayList<>();
+
+        eval.entrySet().stream()
+                .sorted(Comparator.comparing(e -> -e.getValue()))
+                .limit(n)
+                .forEach(e -> keys.add(e.getKey()));
+
+        return keys;
+    }
+
 
     public static <R> R getKeyOfMaxValue(Map<R, Double> map) {
         R maxValueKey = null;

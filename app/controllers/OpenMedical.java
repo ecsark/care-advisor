@@ -19,7 +19,6 @@ import services.MedicalIntelligence;
 import utils.JsonHelper;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -86,22 +85,15 @@ public class OpenMedical extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public Result ask() {
         try {
-            final List<NDisease> nDiseases = medicalIntelligence.relatedDiseases();
-            MDialogue questions = mapper.treeToValue(request().body().asJson(), MDialogue.class);
+            MDialogue answer = mapper.treeToValue(request().body().asJson(), MDialogue.class);
 
-            MResponse response = null;
-            if (session(Users.SESSION_USER_ID_KEY) != null) {
-                long userId = Users.getUserId();
-                //TODO
-            } else {
-            //TODO
-            }
+            // TODO: user customized
+            MDialogue question = medicalIntelligence.furtherQuestions(medicalIntelligence.evaluate(answer), answer);
 
-            return ok(JsonHelper.generate(response));
+            return ok(JsonHelper.generate(question));
 
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return badRequest();
+            return badRequest("Illegal format");
         }
     }
 
@@ -202,12 +194,4 @@ public class OpenMedical extends Controller {
             return badRequest();
         }
     }
-/*
-    @BodyParser.Of(BodyParser.Json.class)
-    public Result searchDiseaseByName() {
-        String disText = request().body().asJson().findValue("d_txt").textValue();
-        List<MEntityEntry> candidates = search.searchDiseases(disText);
-        return ok(JsonHelper.generate(new MCandidates(candidates)));
-    }
-*/
 }

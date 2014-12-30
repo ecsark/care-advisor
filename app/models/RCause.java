@@ -22,6 +22,14 @@ public class RCause extends AbstractEntity {
     @EndNode
     public NSymptom symptom;
 
+    public NDisease getDisease() {
+        return disease;
+    }
+
+    public NSymptom getSymptom() {
+        return symptom;
+    }
+
     public RCause (NDisease disease, NSymptom symptom) {
         this.disease = disease;
         this.symptom = symptom;

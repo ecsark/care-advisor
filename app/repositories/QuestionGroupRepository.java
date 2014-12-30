@@ -2,6 +2,7 @@ package repositories;
 
 import models.NDisease;
 import models.NQuestionGroup;
+import models.NSymptom;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 
@@ -18,5 +19,15 @@ public interface QuestionGroupRepository extends GraphRepository<NQuestionGroup>
     @Query( " start question=node({0}) " +
             " match question-[:ASKS]->symptom<-[:CAUSES]-disease " +
             " return disease")
-    List<NDisease> getRelatedDiseases (NQuestionGroup question);
+    List<NDisease> getRelatedDiseases (long questionId);
+
+    @Query( " start question=node({0}) " +
+            " match question-[:ASKS]->symptom<-[:CAUSES]-disease " +
+            " return distinct disease")
+    List<NDisease> getRelatedDiseases (List<Long> questionIds);
+
+    @Query( " start question=node({0}) " +
+            " match question-[:ASKS]->symptom " +
+            " return distinct symptom")
+    List<NSymptom> getRelatedSymptoms (List<Long> questionIds);
 }
