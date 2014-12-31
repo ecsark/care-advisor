@@ -19,7 +19,7 @@ import services.MedicalIntelligence;
 import utils.EvaluationContext;
 import utils.JsonHelper;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -173,12 +173,14 @@ public class OpenMedical extends Controller {
     public Result submitSymptoms() {
 
         try {
-            MRecord question = mapper.treeToValue(request().body().asJson(), MRecord.class);
+            MRecord record = mapper.treeToValue(request().body().asJson(), MRecord.class);
             NUser u = userRepository.findByRefId(Users.getUserId());
             if (u == null)
                 return forbidden("Please first update user information");
-            NSession s = u.newSession();
-            for (MObject obj : question.diseases) {
+            NSession s = sessionRepository.findOne(record.sessionId);
+            if (s == null || s.user== null || !Objects.equals(s.user.id, u.id))
+                return unauthorized("Invalid session");
+            for (MObject obj : record.symptoms) {
                 Long symId = obj.id;
                 NSymptom symptom = symptomRepository.getById(symId);
                 if (symptom == null)
@@ -187,7 +189,7 @@ public class OpenMedical extends Controller {
                 s.addSymptom(symptom);
             }
             sessionRepository.save(s);
-            return ok(Long.toString(s.id));
+            return ok();
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -195,6 +197,7 @@ public class OpenMedical extends Controller {
         }
     }
 
+    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
     @Security.Authenticated(LoginRequired.class)
     @BodyParser.Of(BodyParser.Json.class)
@@ -206,7 +209,7 @@ public class OpenMedical extends Controller {
             if (u == null)
                 return forbidden("Please first update user information");
             NSession s = sessionRepository.findOne(record.sessionId);
-            if (s == null || !Objects.equals(s.user.id, u.id))
+            if (s == null || s.user== null || !Objects.equals(s.user.id, u.id))
                 return unauthorized("Invalid session");
 
             for (MObject obj : record.diseases) {
@@ -215,9 +218,16 @@ public class OpenMedical extends Controller {
                     return notFound("Invalid Disease ID: " + Long.toString(obj.id));
                 RDiagnose diag = s.addDiagnosedDisease(d);
 
-                Date time = (Date) obj.getParam("diag_tm");
-                if (time != null)
-                    diag.diagDate = time;
+
+                String time = (String) obj.getParam("diag_tm");
+                try {
+
+                    diag.diagDate = formatter.parse(time);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
 
             }
 

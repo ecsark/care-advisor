@@ -2,12 +2,10 @@ package models;
 
 import org.neo4j.graphdb.Direction;
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.neo4j.annotation.GraphProperty;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 
-import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -41,8 +39,8 @@ public class NUser extends AbstractEntity {
         return session;
     }
 
-    @GraphProperty(propertyType = Long.class)
-    public Timestamp created = new Timestamp(Calendar.getInstance().getTime().getTime());
+    //@GraphProperty(propertyType = Long.class)
+    public Date created = new Date(Calendar.getInstance().getTime().getTime());
 
     public NUser() {}
 }

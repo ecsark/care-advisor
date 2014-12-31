@@ -4,7 +4,6 @@ import org.springframework.data.neo4j.annotation.EndNode;
 import org.springframework.data.neo4j.annotation.RelationshipEntity;
 import org.springframework.data.neo4j.annotation.StartNode;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -12,7 +11,7 @@ import java.util.Date;
  * Date: 12/29/14
  * Time: 14:46
  */
-@RelationshipEntity(type = "CAUSE")
+@RelationshipEntity(type = "DIAGNOSE")
 public class RDiagnose extends AbstractEntity {
 
     public RDiagnose(NSession session, NDisease disease) {
@@ -22,7 +21,7 @@ public class RDiagnose extends AbstractEntity {
 
     public RDiagnose() {}
 
-    public Timestamp reportTime = new Timestamp(System.currentTimeMillis());
+    public Date reportTime = new Date(System.currentTimeMillis());
 
     public Date diagDate;
 

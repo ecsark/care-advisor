@@ -1,13 +1,13 @@
 package models;
 
 import org.neo4j.graphdb.Direction;
-import org.springframework.data.neo4j.annotation.GraphProperty;
+import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 import org.springframework.data.neo4j.annotation.RelatedToVia;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -21,23 +21,20 @@ public class NSession extends AbstractEntity {
 
     //TODO: add token to enhance security
 
+    @Fetch
     @RelatedTo(elementClass = NUser.class, type = "COMMIT", direction = Direction.INCOMING)
     public NUser user;
 
     @RelatedTo(elementClass = NSymptom.class, type = "REPORT", direction = Direction.OUTGOING)
-    public Set<NSymptom> symptoms;
+    public Set<NSymptom> symptoms = new HashSet<>();
 
     @RelatedToVia
     public Set<RDiagnose> diagnosed;
 
-    @GraphProperty(propertyType = Long.class)
-    public Timestamp created = new Timestamp(Calendar.getInstance().getTime().getTime());
+    //@GraphProperty(propertyType = Long.class)
+    public Date created = new Date(System.currentTimeMillis());
 
     public NSymptom addSymptom (NSymptom symptom) {
-        if (symptom == null)
-            return null;
-        if (symptoms == null)
-            symptoms = new LinkedHashSet<>();
         symptoms.add(symptom);
         return symptom;
     }

@@ -113,7 +113,7 @@ public class MedicalIntelligence {
 
     @Transactional
     public MAdvice getAdvice (EvaluationContext<NDisease> diseaseEvaluation) {
-        List<NDisease> topDiseases = diseaseEvaluation.getKeyOfTopNValue(3);
+        List<NDisease> topDiseases = diseaseEvaluation.getKeyOfTopNValue(3); // TODO: customize this
         EvaluationContext<NCheckup> checkupEval = new EvaluationContext<>();
 
         for (NDisease dis : topDiseases) {
@@ -125,7 +125,7 @@ public class MedicalIntelligence {
 
         MAdvice advice = new MAdvice();
 
-        final List<Map.Entry<NCheckup, Double>> recommended = checkupEval.getEntryOfTopNValue(5);
+        final List<Map.Entry<NCheckup, Double>> recommended = checkupEval.getEntryOfTopNValue(5);// TODO: customize this
         for (Map.Entry<NCheckup, Double> r : recommended) {
             MCheckup newCheckup = advice.addCheckup();
             NCheckup ck = template.fetch(r.getKey());

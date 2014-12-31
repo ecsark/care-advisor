@@ -2,8 +2,8 @@ package messages;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,7 +17,7 @@ public class MRecord {
     public long sessionId;
 
     @JsonProperty("cre")
-    public Timestamp createdTime;
+    public Date createdTime;
 
     @JsonProperty("sym")
     public List<MObject> symptoms;
@@ -30,7 +30,7 @@ public class MRecord {
         return this;
     }
 
-    public MRecord setCreatedTime(Timestamp createdTime) {
+    public MRecord setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
         return this;
     }

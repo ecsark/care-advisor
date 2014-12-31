@@ -31,6 +31,5 @@ public class Application extends Controller {
         return ok(result);
     }
 
-
 }
 
