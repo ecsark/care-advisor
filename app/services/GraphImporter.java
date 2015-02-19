@@ -27,7 +27,7 @@ public class GraphImporter {
     @Autowired
     private DiseaseRepository diseaseRepo;
     @Autowired
-    private QuestionRepository questionGroupRepo;
+    private QuestionRepository questionRepo;
     @Autowired
     private SymptomGroupRepository symptomGroupRepo;
     @Autowired
@@ -38,7 +38,7 @@ public class GraphImporter {
     private static final String NODE_DISEASE = "Disease";
     private static final String NODE_SYMPTOM_GROUP = "SymptomGroup";
     private static final String NODE_SYMPTOM = "Symptom";
-    private static final String NODE_QUESTION_GROUP = "QuestionGroup";
+    private static final String NODE_QUESTION = "QuestionGroup";
     private static final String NODE_CHECKUP = "Checkup";
 
     private static final String REL_CAUSE = "CAUSE";
@@ -60,7 +60,7 @@ public class GraphImporter {
         //symptomGroupRepo.deleteAll();
         //symptomRepo.deleteAll();
         //diseaseRepo.deleteAll();
-        //questionGroupRepo.deleteAll();
+        //questionRepo.deleteAll();
         checkupRepo.deleteAll();
     }
 
@@ -92,10 +92,10 @@ public class GraphImporter {
                     g.cnText = args[0];
                     symptomGroupRepo.save(g);
                     break;
-                case NODE_QUESTION_GROUP:
+                case NODE_QUESTION:
                     NQuestion q = new NQuestion();
                     q.cnText = args[0];
-                    questionGroupRepo.save(q);
+                    questionRepo.save(q);
                     break;
                 case NODE_CHECKUP:
                     NCheckup c = new NCheckup();
@@ -131,7 +131,7 @@ public class GraphImporter {
                 case REL_ASK:
                     testFewArgThenException(7, args.length, line);
 
-                    NQuestion qg = questionGroupRepo.getByCnText(args[0]);
+                    NQuestion qg = questionRepo.getByCnText(args[0]);
                     testNullThenException(qg, line, "question", args[0]);
 
                     NSymptom sy = symptomRepo.getByCnText(args[2]);

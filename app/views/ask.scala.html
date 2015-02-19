@@ -1,15 +1,33 @@
-@(title: String)(content: Html)
+@(title: String)<!DOCTYPE html>
 
-<!DOCTYPE html>
-
-<html>
+<html data-ng-app="caregiver">
     <head>
         <title>@title</title>
-        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
-        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
-        <script src="@routes.Assets.at("javascripts/hello.js")" type="cnText/javascript"></script>
+        <meta name="viewport" content="width=device-width" />
+        <link href="@routes.Assets.at("assets/css/bootstrap.min.css")" rel="stylesheet" />
+        <link href="@routes.Assets.at("assets/css/bootstrap-responsive.min.css")" rel="stylesheet" />
+        <link href="@routes.Assets.at("assets/css/loading-bar.min.css")" rel="stylesheet" />
+        <link href="@routes.Assets.at("assets/css/angular-material.min.css")" rel="stylesheet" />
+        <link href="@routes.Assets.at("assets/css/mfb.css")" rel="stylesheet" />
+        <link href="@routes.Assets.at("assets/css/style.css")" rel="stylesheet" />
     </head>
-    <body>
-        @content
+
+    <body data-ng-controller="MedicalAsk">
+
+        <div data-animated-view></div>
+
+        <script src="@routes.Assets.at("assets/script/jquery.min.js")"></script>
+        <script src="@routes.Assets.at("assets/script/angular.min.js")"></script>
+        <script src="@routes.Assets.at("assets/script/angular-route.js")"></script>
+        <script src="@routes.Assets.at("assets/script/angular-animate.min.js")"></script>
+        <script src="@routes.Assets.at("assets/script/angular-aria.min.js")"></script>
+        <script src="@routes.Assets.at("assets/script/angular-material.min.js")"></script>
+        <script src="@routes.Assets.at("assets/script/loading-bar.min.js")"></script>
+        <script src="@routes.Assets.at("assets/script/mfb-directive.js")"></script>
+
+        <script src="@routes.Assets.at("app/app.js")"></script>
+        <script src="@routes.Assets.at("app/controllers/askController.js")"></script>
+        <script src="@routes.Assets.at("app/services/askService.js")"></script>
+        <script src="@routes.Assets.at("app/directives/animatedView.js")"></script>
     </body>
 </html>

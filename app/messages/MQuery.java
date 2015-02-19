@@ -2,9 +2,11 @@ package messages;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import models.NSymptomGroup;
 import org.springframework.data.annotation.Transient;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +35,28 @@ public class MQuery implements IMessage {
     @JsonIgnore
     public List<Long> getQuestionIds () {
         return answers.stream().map(ans -> ans.questionId).collect(Collectors.toList());
+    }
+
+    /*
+     * Some queries might integrate "mainAnswers" into "answers".
+     * This method moves those "mainAnswers" in "answers" to where they belong.
+     */
+    @JsonIgnore
+    public MQuery categorize() {
+        Iterator<MAnswer> i = answers.iterator();
+        while (i.hasNext()) {
+            MAnswer ans = i.next();
+            if (ans.questionId == NSymptomGroup.getQuestionId()) {
+                if (mainAnswer.items.size() == 0)
+                    mainAnswer.questionId = NSymptomGroup.getQuestionId();
+
+                ans.items.forEach(mainAnswer::addItem);
+
+                i.remove();
+            }
+        }
+
+        return this;
     }
 
 

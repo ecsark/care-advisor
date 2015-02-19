@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import messages.*;
 import models.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import play.Logger;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -16,6 +17,7 @@ import repositories.SessionRepository;
 import repositories.SymptomRepository;
 import repositories.UserRepository;
 import services.MedicalIntelligence;
+import services.NoMoreQuestionException;
 import utils.EvaluationContext;
 import utils.JsonHelper;
 
@@ -88,30 +90,43 @@ public class OpenMedical extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public Result ask() {
         try {
+            Logger.debug("Medical ask:" + request().body().asJson().toString());
             MQuery query = mapper.treeToValue(request().body().asJson(), MQuery.class);
+            query.categorize();
 
             IMessage response = null;
             // TODO: user customized
             EvaluationContext<NDisease> eval = medicalIntelligence.evaluate(query);
 
-            switch (query.status) {
-                case MQuery.DIAGNOSIS: response = generateCandidates(eval, 5); break;//TODO: customize limit
+            try {
+                switch (query.status) {
+                    case MQuery.DIAGNOSIS:
+                        response = generateCandidates(eval, 5);
+                        break;//TODO: customize limit
 
-                case MQuery.MORE_QUESTION: response = medicalIntelligence.furtherQuestions(eval, query); break;
-
-                case MQuery.ADVICE: response = medicalIntelligence.getAdvice(eval); break;
-
-                default: // AUTO
-                    int askedQuestions = query.getQuestionIds().size();
-                    double evalPerf = eval.getMaxValue();
-
-                    if (askedQuestions > 12 || (askedQuestions > 5 && evalPerf > 0.8))
-                        response = generateCandidates(eval, 5);//TODO: customize limit
-
-                    else
+                    case MQuery.MORE_QUESTION:
                         response = medicalIntelligence.furtherQuestions(eval, query);
+                        break;
+
+                    case MQuery.ADVICE:
+                        response = medicalIntelligence.getAdvice(eval);
+                        break;
+
+                    default: // AUTO
+                        int askedQuestions = query.getQuestionIds().size();
+                        double evalPerf = eval.getMaxValue();
+
+                        if (askedQuestions > 12 || (askedQuestions > 5 && evalPerf > 0.8))
+                            response = generateCandidates(eval, 5);//TODO: customize limit
+
+                        else
+                            response = medicalIntelligence.furtherQuestions(eval, query);
+                }
+            } catch (NoMoreQuestionException e) {
+                response = medicalIntelligence.getAdvice(eval);
             }
 
+            Logger.debug("Medical response:"+JsonHelper.generate(response).toString());
             return ok(JsonHelper.generate(response));
 
         } catch (JsonProcessingException e) {
@@ -218,17 +233,13 @@ public class OpenMedical extends Controller {
                     return notFound("Invalid Disease ID: " + Long.toString(obj.id));
                 RDiagnose diag = s.addDiagnosedDisease(d);
 
-
                 String time = (String) obj.getParam("diag_tm");
                 try {
-
                     diag.diagDate = formatter.parse(time);
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-
             }
 
             sessionRepository.save(s);

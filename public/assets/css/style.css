@@ -1,0 +1,42 @@
+body {
+    overflow: hidden;
+    max-width: 100%;
+    max-height: 100%;
+    font-size: 14px;
+}
+
+md-card {
+	background-color: #fefefe;
+    max-width: 750px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+md-toolbar h1{
+	font-weight:bold;
+	margin:auto;
+}
+
+.md-toolbar-tools {
+	font-size:150%;
+}
+
+.visually-hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0; 
+  position: absolute;
+  width: 1px;
+}
+
+#loading-bar .bar {
+	background: #66CCFF;
+}
+
+#loading-bar-spinner .spinner-icon {
+	border-top-color:  #66CCFF;
+ 	border-left-color: #66CCFF;
+}

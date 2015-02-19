@@ -104,7 +104,7 @@ public class MedicalIntelligence {
         symptomGroupRepo.findAll().forEach(sgroup -> {
             MItem item = ask.createItem();
             item.id = sgroup.id;
-            item.questionText = sgroup.cnText;
+            item.answerText = sgroup.cnText;
         });
 
         return dialog;
@@ -140,7 +140,7 @@ public class MedicalIntelligence {
 
 
     @Transactional
-    public MReply furtherQuestions (EvaluationContext<NDisease> diseaseEvaluation, MQuery query) {
+    public MReply furtherQuestions (EvaluationContext<NDisease> diseaseEvaluation, MQuery query) throws NoMoreQuestionException {
 
         if (diseaseEvaluation.eval.isEmpty())
             return firstQuestion();
@@ -152,8 +152,6 @@ public class MedicalIntelligence {
         Set<Long> excludedSymptomGroupsIds = mainQuestions.stream()
                 .filter(item -> item.answerValue != null && item.answerValue < 0.2)
                 .map(item -> item.id).collect(Collectors.toSet());
-
-
 
         List<NDisease> topDiseases = diseaseEvaluation.getKeyOfTopNValue(10); // TODO: reason about this threshold
         NDisease top1 = topDiseases.get(0);
@@ -187,9 +185,12 @@ public class MedicalIntelligence {
             symEval.put(symptom, entropy);
         }
 
+        if (symEval.eval.size() == 0)
+            throw new NoMoreQuestionException("No further questions");
 
         MReply dialog = new MReply();
         MQuestion ask = dialog.createQuestion();
+
 
         NSymptom niceSymptom = symEval.getKeyOfMaxValue();
         NSymptomGroup sgroup = niceSymptom.symptomGroup;
@@ -202,7 +203,7 @@ public class MedicalIntelligence {
             ask.questionText = sgroup.getQuestion();
             MItem item = ask.createItem();
             item.id = sgroup.id;
-            item.questionText = sgroup.cnText;
+            item.answerText = sgroup.cnText;
 
         } else {
             NQuestion questionGroup = fetch(niceSymptom.question).question;
@@ -212,7 +213,7 @@ public class MedicalIntelligence {
             for (RAsk q : questionGroup.questions) {
                 MItem item = ask.createItem();
                 item.id = q.symptomChoice.id;
-                item.questionText = q.cnText;
+                item.answerText = q.cnText;
             }
         }
         return dialog;

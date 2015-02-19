@@ -95,6 +95,7 @@
 您有出现尿频尿急尿痛吗？:QuestionGroup
 您有出现肛门坠张感吗？:QuestionGroup
 您有出现胸痛吗？:QuestionGroup
+您有出现发热吗？:QuestionGroup
 您有出现心律失常吗？:QuestionGroup
 您有出现神经精神症状吗？:QuestionGroup
 您有出现眼症状吗？:QuestionGroup

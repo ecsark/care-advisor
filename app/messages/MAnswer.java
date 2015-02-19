@@ -18,6 +18,9 @@ public class MAnswer {
     @JsonProperty("items")
     public List<MItem> items = new ArrayList<>();
 
+    public void addItem(MItem item) {
+        items.add(item);
+    }
 
     public MItem createItem() {
         MItem item = new MItem();

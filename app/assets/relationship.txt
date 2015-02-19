@@ -160,6 +160,7 @@
 您有出现乏力吗？:ASK:乏力:TEXT:有乏力:TYPE:2
 您有出现皮肤反应吗？:ASK:皮肤:TEXT:有皮肤反应:TYPE:2
 您有出现关节痛吗？:ASK:关节痛:TEXT:有关节痛:TYPE:2
+您有出现发热吗？:ASK:发热:TEXT:有发热:TYPE:2
 您有出现水肿吗？:ASK:水肿:TEXT:有水肿:TYPE:2
 您有出现多尿吗？:ASK:多尿:TEXT:有多尿:TYPE:2
 您有出现血尿吗？:ASK:血尿:TEXT:有血尿:TYPE:2

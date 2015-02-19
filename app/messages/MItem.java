@@ -14,8 +14,8 @@ public class MItem {
     @JsonProperty("a_id")
     public long id;
 
-    @JsonProperty("q_txt")
-    public String questionText;
+    @JsonProperty("a_txt")
+    public String answerText;
 
     @JsonProperty("a_val")
     public Double answerValue;

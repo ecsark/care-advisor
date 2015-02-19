@@ -1,10 +1,7 @@
 package models;
 
 import org.neo4j.graphdb.Direction;
-import org.springframework.data.neo4j.annotation.Indexed;
-import org.springframework.data.neo4j.annotation.NodeEntity;
-import org.springframework.data.neo4j.annotation.RelatedTo;
-import org.springframework.data.neo4j.annotation.RelatedToVia;
+import org.springframework.data.neo4j.annotation.*;
 
 import java.util.Set;
 
