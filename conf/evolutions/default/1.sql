@@ -4,26 +4,26 @@
 # --- !Ups
 
 create table mfeedback (
-  feedback_id               bigint not null,
+  feedback_id               bigint auto_increment not null,
   user_id                   bigint,
-  created_time              timestamp,
+  created_time              datetime,
   content                   varchar(255),
   email                     varchar(255),
   contact                   varchar(255),
-  resolved                  timestamp,
+  resolved                  datetime,
   constraint pk_mfeedback primary key (feedback_id))
 ;
 
 create table msession (
-  session_id                bigint not null,
+  session_id                bigint auto_increment not null,
   user_id                   bigint,
-  created_time              timestamp,
+  created_time              datetime,
   token                     varchar(255),
   constraint pk_msession primary key (session_id))
 ;
 
 create table muser (
-  user_id                   bigint not null,
+  user_id                   bigint auto_increment not null,
   username                  varchar(255),
   password                  varchar(255),
   name                      varchar(255),
@@ -31,30 +31,18 @@ create table muser (
   constraint pk_muser primary key (user_id))
 ;
 
-create sequence mfeedback_seq;
-
-create sequence msession_seq;
-
-create sequence muser_seq;
-
 
 
 
 # --- !Downs
 
-SET REFERENTIAL_INTEGRITY FALSE;
+SET FOREIGN_KEY_CHECKS=0;
 
-drop table if exists mfeedback;
+drop table mfeedback;
 
-drop table if exists msession;
+drop table msession;
 
-drop table if exists muser;
+drop table muser;
 
-SET REFERENTIAL_INTEGRITY TRUE;
-
-drop sequence if exists mfeedback_seq;
-
-drop sequence if exists msession_seq;
-
-drop sequence if exists muser_seq;
+SET FOREIGN_KEY_CHECKS=1;
 

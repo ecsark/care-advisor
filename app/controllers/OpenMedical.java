@@ -86,11 +86,13 @@ public class OpenMedical extends Controller {
     }
 
 
-
+    @Security.Authenticated(LoginRequired.class)
     @BodyParser.Of(BodyParser.Json.class)
     public Result ask() {
         try {
-            Logger.debug("Medical ask:" + request().body().asJson().toString());
+            String userId = Long.toString(Users.getUserId());
+            Logger.debug(userId+" asks: " + request().body().asJson().toString());
+            //Logger.debug("Ask: " + request().body().asJson().toString());
             MQuery query = mapper.treeToValue(request().body().asJson(), MQuery.class);
             query.categorize();
 
@@ -126,7 +128,7 @@ public class OpenMedical extends Controller {
                 response = medicalIntelligence.getAdvice(eval);
             }
 
-            Logger.debug("Medical response:"+JsonHelper.generate(response).toString());
+            Logger.debug("Response:"+JsonHelper.generate(response).toString());
             return ok(JsonHelper.generate(response));
 
         } catch (JsonProcessingException e) {

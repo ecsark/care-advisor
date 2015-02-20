@@ -15,6 +15,7 @@ public class Application extends Controller {
         return ok(index.render("Care for you~"));
     }
 
+
     public static Result indexAsk() {
         return ok(ask.render("IntelDiagnosis"));
     }

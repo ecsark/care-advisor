@@ -1,76 +1,67 @@
-<div flex layout="column" layout-fill>
-	<md-toolbar md-scroll-shrink>
-	<div class="md-toolbar-tools">
-	  <h1>智能诊断</h1>
-	</div>
-	</md-toolbar>
-  	<md-content flex class="md-padding ng-scope">
-	  	<div layout-margin>
-		    <md-card ng-repeat="question in qa" class="green">
-		      <md-card-content>
-		        <h2 ng-if="question.q_txt!=null">{{question.q_txt}}</h2>
-				<h2 ng-if="question.q_txt==null">以下适合的有</h2>
-		        <p ng-repeat="item in question.items">
-		        	<md-checkbox ng-model="item.a_val" ng-true-value="0.9" ng-false-value="0.1" class="md-warn">
-					    {{ item.a_txt }}
-					</md-checkbox>
-		        </p>
-		      </md-card-content>
-		    </md-card>
-	    	<br>
-	    </div>
 
-		 <div layout-margin ng-if="diagnosis.length>0">
-		    <md-card>
-		      <md-card-content>
-		        <h2>模拟诊断</h2>
-		        <table class="table table-striped">
-						<thead>
-							<tr>
-								<th>可能疾病</th>
-								<th>评估</th>
-							</tr>
-						</thead>
-						<tbody ng-repeat="dg in diagnosis">
-							<tr>
-								<td>{{ dg.d_txt }}</td>
-								<td>{{ dg.d_eval }}</td>
-							</tr>
-						</tbody>
-					</table>
-		      </md-card-content>
-		    </md-card>
-	    </div>
+    <div data-layout-margin>
+        <md-card id="a{{question.q_id}}" ng-repeat="question in qa" class="green">
+          <md-card-content>
+            <h2 data-ng-if="question.q_txt!=null">{{question.q_txt}}</h2>
+            <h2 data-ng-if="question.q_txt==null">以下适合的有</h2>
+            <p data-ng-repeat="item in question.items">
+                <md-checkbox ng-model="item.a_val" ng-true-value="0.9" ng-false-value="0.1" class="md-warn">
+                    {{ item.a_txt }}
+                </md-checkbox>
+            </p>
+          </md-card-content>
+        </md-card>
+        <br>
+    </div>
 
-	    <div layout-margin ng-if="advices.length>0">
-		    <md-card>
-		      <md-card-content>
-		        <h2>推荐检查</h2>
-		        <table class="table table-striped">
-						<thead>
-							<tr>
-								<th>检查项目</th>
-								<th>重要性</th>
-							</tr>
-						</thead>
-						<tbody ng-repeat="ad in advices">
-							<tr>
-								<td>{{ ad.name }}</td>
-								<td>{{ ad.imp }}</td>
-							</tr>
-						</tbody>
-					</table>
-		      </md-card-content>
-		    </md-card>
-	    </div>
-	</md-content>
+     <div data-layout-margin data-ng-if="diagnosis.length>0">
+        <md-card id="ad">
+          <md-card-content>
+            <h2>模拟诊断</h2>
+            <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>可能疾病</th>
+                            <th>评估</th>
+                        </tr>
+                    </thead>
+                    <tbody data-ng-repeat="dg in diagnosis">
+                        <tr>
+                            <td>{{ dg.d_txt }}</td>
+                            <td>{{ dg.d_eval }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+          </md-card-content>
+        </md-card>
+    </div>
 
-<nav mfb-menu position="br" effect="fountain" toggling-method="hover" label="自动" 
-        active-icon="glyphicon glyphicon-ok" resting-icon="glyphicon glyphicon-ok">
-  <a mfb-button icon="glyphicon glyphicon-play" label="自动" ng-click="proceed('auto')"></a>
-  <a mfb-button icon="glyphicon glyphicon-forward" label="继续提问" ng-click="proceed('more')"></a>
-  <a mfb-button icon="glyphicon glyphicon-filter" label="模拟诊断" ng-click="proceed('diagnosis')"></a>
-  <a mfb-button icon="glyphicon glyphicon-erase" label="检查建议" ng-click="proceed('advice')"></a>
+    <div data-layout-margin data-ng-if="advices.length>0">
+        <md-card id="aa">
+          <md-card-content>
+            <h2>推荐检查</h2>
+            <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>检查项目</th>
+                            <th>重要性</th>
+                        </tr>
+                    </thead>
+                    <tbody data-ng-repeat="ad in advices">
+                        <tr>
+                            <td>{{ ad.name }}</td>
+                            <td>{{ ad.imp }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+          </md-card-content>
+        </md-card>
+    </div>
+
+<nav id="state-menu" mfb-menu data-position="br" data-effect="fountain" data-toggling-method="hover" data-label="操作"
+     data-active-icon="glyphicon glyphicon-ok" data-resting-icon="glyphicon glyphicon-ok" menu-state="closed">
+  <a mfb-button data-icon="glyphicon glyphicon-play" data-label="自动" data-ng-click="proceed('auto')"></a>
+  <a mfb-button data-icon="glyphicon glyphicon-forward" data-label="提问" data-ng-click="proceed('more')"></a>
+  <a mfb-button data-icon="glyphicon glyphicon-filter" data-label="诊断" data-ng-click="proceed('diagnosis')"></a>
+  <a mfb-button data-icon="glyphicon glyphicon-erase" data-label="建议" data-ng-click="proceed('advice')"></a>
 </nav>
-
-</div>

@@ -1,5 +1,6 @@
 
-var app = angular.module('caregiver', ['ngRoute', 'angular-loading-bar', 'ngAnimate', 'ngMaterial', 'ng-mfb']);
+var app = angular.module('caregiver', ['ngRoute', 'http-auth-interceptor', 'angular-loading-bar',
+    'ngAnimate', 'ngMaterial', 'ng-mfb']);
 //, 'ui.bootstrap'
 //This configures the routes and associates each route with a view and a controller
 app.config(function ($routeProvider) {
@@ -7,8 +8,7 @@ app.config(function ($routeProvider) {
         .when('/ask',
             {
                 controller: 'MedicalAsk',
-                templateUrl:'../assets/app/partials/ask.html'
-            })
+                templateUrl:'../assets/app/partials/ask.html'})
         //Define a route that has a route parameter in it (:customerID)
         .otherwise({ redirectTo: '/ask' });
 });

@@ -7,8 +7,6 @@ import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Security;
 
-import java.util.Date;
-
 /**
  * User: ecsark
  * Date: 12/17/14
@@ -22,8 +20,8 @@ public class LoginRequired extends Security.Authenticator {
 
         try {
             long uid = Long.parseLong(ctx.session().get(Users.SESSION_USER_ID_KEY));
-            long ts = Long.parseLong(ctx.session().get(Users.SESSION_LOGIN_TIME_KEY));
-            Date sessionDt = new Date(ts);
+            //long ts = Long.parseLong(ctx.session().get(Users.SESSION_LOGIN_TIME_KEY));
+            //Date sessionDt = new Date(ts);
             return Long.toString(uid);
         } catch (Exception e) {
             return null;

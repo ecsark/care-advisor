@@ -12,9 +12,37 @@
         <link href="@routes.Assets.at("assets/css/style.css")" rel="stylesheet" />
     </head>
 
-    <body data-ng-controller="MedicalAsk">
-
-        <div data-animated-view></div>
+    <body>
+        <div class="integrated-container">
+            <div id="user" data-ng-controller="UserController">
+                <md-content class="md-padding md-default-theme login-card" data-layout-margin>
+                    <md-card>
+                        <md-card-content layout="column" layout-align="center center">
+                            <h2>Authentication</h2>
+                            <form data-ng-submit="loginSubmit()" layout-fill>
+                                <md-input-container>
+                                    <label>Username</label>
+                                    <input type="text" data-ng-model="login.usr">
+                                </md-input-container>
+                                <md-input-container>
+                                    <label>Password</label>
+                                    <input type="text" data-ng-model="login.pwd">
+                                </md-input-container>
+                            </form>
+                            <md-button data-ng-click="loginSubmit()">Continue</md-button>
+                        </md-card-content>
+                    </md-card>
+                </md-content>
+            </div>
+            <div id="main" data-flex data-layout="column" data-layout-fill>
+                <md-toolbar md-scroll-shrink>
+                    <div class="md-toolbar-tools">
+                        <h1>智能诊断</h1>
+                    </div>
+                </md-toolbar>
+                <md-content scroll-shrink="false" flex class="md-padding" data-ng-view></md-content>
+            </div>
+        </div>
 
         <script src="@routes.Assets.at("assets/script/jquery.min.js")"></script>
         <script src="@routes.Assets.at("assets/script/angular.min.js")"></script>
@@ -23,11 +51,16 @@
         <script src="@routes.Assets.at("assets/script/angular-aria.min.js")"></script>
         <script src="@routes.Assets.at("assets/script/angular-material.min.js")"></script>
         <script src="@routes.Assets.at("assets/script/loading-bar.min.js")"></script>
+        <script src="@routes.Assets.at("assets/script/modernizr-touch.js")"></script>
         <script src="@routes.Assets.at("assets/script/mfb-directive.js")"></script>
+        <script src="@routes.Assets.at("assets/script/http-auth-interceptor.js")"></script>
+
 
         <script src="@routes.Assets.at("app/app.js")"></script>
         <script src="@routes.Assets.at("app/controllers/askController.js")"></script>
+        <script src="@routes.Assets.at("app/controllers/userController.js")"></script>
         <script src="@routes.Assets.at("app/services/askService.js")"></script>
         <script src="@routes.Assets.at("app/directives/animatedView.js")"></script>
+
     </body>
 </html>
