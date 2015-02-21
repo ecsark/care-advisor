@@ -7,7 +7,7 @@ app.controller('UserController', function ($scope, $http, authService) {
     }
 
     $scope.loginSubmit = function () {
-        $http.post('http://192.168.1.114:9000/users/auth', $scope.login).success(onResponse);
+        $http.post('/users/auth', $scope.login).success(onResponse);
     };
 
     function onResponse(response) {

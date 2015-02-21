@@ -67,7 +67,7 @@ app.controller('MedicalAsk', function ($scope, $http, $anchorScroll, $location) 
 			case "more": query.status = 3; break;
 		}
 		
-		$http.post('http://192.168.1.114:9000/medical/ask', query).success(onResponse);
+		$http.post('/medical/ask', query).success(onResponse);
 
 	};
 });

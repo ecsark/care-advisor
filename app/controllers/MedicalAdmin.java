@@ -1,10 +1,12 @@
 package controllers;
 
+import actions.LoginRequired;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 import services.GraphImporter;
 
 import java.io.File;
@@ -27,6 +29,7 @@ public class MedicalAdmin extends Controller {
         return ok();
     }
 
+    @Security.Authenticated(LoginRequired.class)
     @BodyParser.Of(BodyParser.Json.class)
     public Result importNode() {
         try {
@@ -39,6 +42,7 @@ public class MedicalAdmin extends Controller {
         }
     }
 
+    @Security.Authenticated(LoginRequired.class)
     @BodyParser.Of(BodyParser.Json.class)
     public Result importRelationship() {
         try {
