@@ -12,10 +12,10 @@ libraryDependencies ++= Seq(
   cache,
   javaWs,
   "mysql" % "mysql-connector-java" % "5.1.34",
-  "org.neo4j" % "neo4j-kernel" % "2.1.6",
+  "org.neo4j" % "neo4j-kernel" % "2.1.7",
   "org.neo4j" % "neo4j-rest-graphdb" % "2.0.1",
   "com.sun.jersey" % "jersey-core" % "1.18.3",
-  "org.neo4j" % "neo4j-cypher-dsl" % "2.0.1",
+  "org.neo4j" % "neo4j-cypher-dsl" % "2.1.4",
   "org.springframework" % "spring-context" % "4.1.3.RELEASE",
   "org.springframework.data" % "spring-data-neo4j" % "3.2.1.RELEASE",
   "org.springframework.data" % "spring-data-neo4j-rest" % "3.2.1.RELEASE"
@@ -23,4 +23,4 @@ libraryDependencies ++= Seq(
 )
 
 
-resolvers += "neo4j-releases" at "http://m2.neo4j.org/releases"
+resolvers += "neo4j-releases" at "http://m2.neo4j.org/content/repositories/releases"

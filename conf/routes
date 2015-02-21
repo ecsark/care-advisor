@@ -3,28 +3,28 @@
 # ~~~~
 
 # Home page
-GET            /                         controllers.Application.index()
+# GET            /                         controllers.Application.index()
 POST           /hello                    controllers.Application.jsonHello()
-GET            /entry                    controllers.Application.indexAsk()
+GET            /                    controllers.Application.indexAsk()
 
-POST           /feedback                 controllers.Users.feedback()
+# POST           /feedback                 controllers.Users.feedback()
 
-POST           /users/signup             controllers.Users.signup()
+#POST           /users/signup             controllers.Users.signup()
 POST           /users/auth               controllers.Users.login()
 DELETE         /users/auth               controllers.Users.logout()
-PUT            /users/update             controllers.Users.updateUser()
+#PUT            /users/update             controllers.Users.updateUser()
 
-GET            /medical/history          @controllers.OpenMedical.getHistory()
+#GET            /medical/history          @controllers.OpenMedical.getHistory()
 POST           /medical/ask              @controllers.OpenMedical.ask()
-GET            /medical/session          @controllers.OpenMedical.requestSession()
-GET            /medical/userinfo         @controllers.OpenMedical.getUserInfo()
-POST           /medical/userinfo         @controllers.OpenMedical.updateUserInfo()
-POST           /medical/submitdis        @controllers.OpenMedical.submitDisease()
-POST           /medical/submitsym        @controllers.OpenMedical.submitSymptoms()
+#GET            /medical/session          @controllers.OpenMedical.requestSession()
+#GET            /medical/userinfo         @controllers.OpenMedical.getUserInfo()
+#POST           /medical/userinfo         @controllers.OpenMedical.updateUserInfo()
+#POST           /medical/submitdis        @controllers.OpenMedical.submitDisease()
+#POST           /medical/submitsym        @controllers.OpenMedical.submitSymptoms()
 
-POST           /admin/importnode         @controllers.MedicalAdmin.importNode()
-POST           /admin/importrel          @controllers.MedicalAdmin.importRelationship()
-GET            /admin/clearall           @controllers.MedicalAdmin.clearAll()
+#POST           /admin/importnode         @controllers.MedicalAdmin.importNode()
+#POST           /admin/importrel          @controllers.MedicalAdmin.importRelationship()
+#GET            /admin/clearall           @controllers.MedicalAdmin.clearAll()
 
 
 # Map static resources from the /public folder to the /assets URL path
